@@ -18,7 +18,7 @@ if not found:
 compiler = Path(found).resolve()
 extra = []
 if a.sanitize:
-    extra = ['-fsanitize=address,undefined', '-fno-omit-frame-pointer', '-O1', '-g', '-U_FORTIFY_SOURCE', '-D_FORTIFY_SOURCE=3']
+    extra = ['-fsanitize=address,undefined', '-fno-omit-frame-pointer', '-fno-pie', '-O1', '-g', '-U_FORTIFY_SOURCE', '-D_FORTIFY_SOURCE=3']
 link = ['-no-pie'] if a.sanitize else []
 if a.faults:
     source = (root/'tests/faults.c').read_bytes()
@@ -30,7 +30,7 @@ body = ('#!/usr/bin/env python3\nimport os,sys\n'
         f'compiler={str(compiler)!r}\nextra={extra!r}\nlink={link!r}\n'
         'args=sys.argv[1:]\n'
         'if "--version" not in args:\n'
-        '    args=extra+args+(link if "-c" not in args else [])\n'
+        '    args=args+extra+(link if "-c" not in args else [])\n'
         'os.execv(compiler,[compiler]+args)\n')
 # Goose identifies CC by its path/style/version. Wrapper contents/environment
 # alone are insufficient: freeze compiler, instrumentation and fixture identities.
