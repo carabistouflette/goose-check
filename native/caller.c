@@ -108,7 +108,7 @@ void gc_recover(int64_t transferred) {
       fputs("goose-check: recovering transferred child before returning\n", stderr);
       diagnosed = true;
     }
-    // Permission-denied waits/signals must not release locks or spin. A child
+    // Permission-denied waits/signals must not abandon ownership or spin. A child
     // that cannot be signalled may need to terminate naturally.
     struct timespec pause = {0, 20000000};
     while (nanosleep(&pause, &pause) < 0 && errno == EINTR) {}
