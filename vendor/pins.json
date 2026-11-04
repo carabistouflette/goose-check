@@ -26,5 +26,21 @@
       "native/fs_internal.h": "aeb2c590efc6c0dcc61c1a662ab4eeb35f6fc32d8aa89360a99acb444e82d13c",
       "native/handles.c": "ae8e30070697258499a55df04d59d4a4106d23e28a6e745c1438a66734dcc7ce"
     }
+  },
+  "goose-config": {
+    "repository": "https://github.com/carabistouflette/goose-config",
+    "revision": "f7bef7dcfeab2ca95c94d92d0fbb2320ab3dcb05",
+    "sha256": {
+      "config.goose": "8a5113e14a2d44f4c6c2278c844ec2ad14c466117125dff22fb8c562c1eda4e6",
+      "json_layer.goose": "d6c34a3cb80de194d13cf19d1faeb6ba0923b361d167ccfd37d1ed2c58f55311",
+      "toml.goose": "4358d950c69162d62770d808a6f488422aa6879df8a8d26d5c34e8e12d491cfc",
+      "vendor.goose": "c4b021a0928444a5f049a99eb7a542689ea6803d0d2e845c86ba43a0fc6c31c1",
+      "bindings.goose": "92d9371a5937101d624cfdd3806a495e284d5ccceb6d9d2ca1852d136ee3eb06",
+      "reload.goose": "55d2a1ad3c014cb7ec3b5b6fc04521dade728ed1dac99ed2e57c5ed60fd9a77f",
+      "LICENSE": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+      "THIRD_PARTY_NOTICES.md": "ecf6e74c45e1ab76187181385c19910d9d74a8f31c69a3b9c5586e18c91c252f",
+      "vendor/LICENSE": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+      "vendor/README.md": "5e85ecd3dbbc5c640edcf455a1ff852fe0dae592ff45cefa1c83781eb605d1c4"
+    }
   }
 }

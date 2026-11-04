@@ -1,8 +1,12 @@
 goose-check
 Copyright 2026 goose-check contributors
 
-Includes reviewed Apache-2.0 sources from goose-process and goose-fs.
+Includes reviewed Apache-2.0 sources from goose-process, goose-fs and goose-config.
 Their source revisions, licenses and notices are retained in vendor/.
+
+goose-config includes an adapted goose-toml parser.
+Copyright 2026 goose-config and goose-toml contributors.
+Their source revision, modifications and complete parser license are retained.
 
 Application signal guard and exceptional recovery adapted from Honk.
 Copyright 2026 Honk contributors.

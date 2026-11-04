@@ -28,8 +28,8 @@ make example CC=gcc
 ```
 
 The integration tests also check valid and invalid Goose programs using the
-pinned Goose compiler. This is a standalone consumer of goose-process and
-goose-fs, with reviewed dependency sources bundled at exact commits. Builds do
+pinned Goose compiler. This is a standalone consumer of goose-process,
+goose-fs and goose-config, with dependency sources bundled at exact commits. Builds do
 not fetch library dependencies. The compiler is downloaded by `make setup`.
 
 ## Interface
@@ -42,6 +42,7 @@ goose-check [options] -- /absolute/program [arguments...]
 --expect-exit N       expected normal exit, 0..255 (default: 0)
 --timeout-ms N        finite process budget, 1..86400000 (default: 30000)
 --output-limit N      stdout capture limit, 0..1048576 (default: 65536)
+--config ABSFILE      explicit .json/.toml numeric defaults (maximum 64 KiB)
 ```
 
 Options may occur once each. `--` is required. Executable paths must be absolute;
@@ -57,6 +58,12 @@ separators or trailing separator. They are bounded regular-file reads without
 text/newline conversion. Invalid or unreadable fixtures fail before launch.
 Filesystem operations have no deadline; the process budget starts later. See
 the complete [contract](docs/CONTRACT.md).
+
+For shared numeric defaults, use `--config "$PWD/examples/checker.toml"`.
+The file can set only `timeout_ms`, `output_limit` and `expect_exit`; CLI values
+take priority regardless of order. There is no implicit file discovery or
+environment binding. Invalid selected files fail before command launch.
+See [configuration contracts and examples](docs/CONFIGURATION.md).
 
 The app forwards parent cancellation through pidfds and keeps ownership through
 cleanup. It supervises only the direct child. Descendants are not killed and may

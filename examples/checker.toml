@@ -1,0 +1,4 @@
+# Explicit defaults for an individual goose-check invocation.
+timeout_ms = 60000
+output_limit = 65536
+expect_exit = 0

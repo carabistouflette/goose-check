@@ -13,6 +13,9 @@ Options, each accepted at most once:
 - `--expect-exit INTEGER`: default 0, range 0..255.
 - `--timeout-ms INTEGER`: default 30000, range 1..86400000.
 - `--output-limit INTEGER`: default 65536, range 0..1048576.
+- `--config ABSOLUTE_FILE`: opt-in `.json`/`.toml` numeric defaults, at most
+  65,536 bytes. Supplied numeric flags override these defaults regardless
+  of option order; see [configuration](CONFIGURATION.md).
 
 A literal `--` is required before the executable; subsequent argument bytes and
 empty arguments retain their boundaries. Numeric options accept decimal digits

@@ -53,8 +53,8 @@ class Checker(unittest.TestCase):
         p.write_bytes(value)
         return str(p)
 
-    def run_check(self, options, command, code=0):
-        with owned([TOOL, *map(str, options), '--', *map(str, command)]) as p:
+    def run_check(self, options, command, code=0, env=None):
+        with owned([TOOL, *map(str, options), '--', *map(str, command)], env=env) as p:
             out, err = p.communicate(timeout=30)
             self.assertEqual(p.returncode, code, (p.returncode, err[:2000]))
             self.assertEqual(out, b'')
@@ -116,6 +116,85 @@ class Checker(unittest.TestCase):
         expected = self.fixture('argv', json.dumps(args).encode())
         self.run_check(['--stdout', expected], self.child('args', *args))
 
+    def test_configured_defaults_precedence_and_fresh_reads(self):
+        for extension, document in [('json', b'{"expect_exit":7,"output_limit":0,"timeout_ms":30000}'),
+                                    ('toml', b'expect_exit=7\noutput_limit=0\ntimeout_ms=30000\n')]:
+            path = self.fixture('settings with spaces.' + extension, document)
+            self.run_check(['--config', path], self.child('exit', 7))
+            for options in [['--expect-exit', '0', '--config', path],
+                            ['--config', path, '--expect-exit', '0'],
+                            ['--config', path, '--expect-exit', '0' * 512]]:
+                self.run_check(options, ['/bin/true'])
+            # File layers are replayed per invocation; removed keys use defaults.
+            Path(path).write_bytes(b'{}' if extension == 'json' else b'')
+            self.run_check(['--config', path], ['/bin/true'])
+            self.run_check(['--config', path], self.child('exit', 7), 1)
+            Path(path).unlink()
+            self.run_check(['--config', path], ['/bin/true'], 125)
+        # Environment does not select a file or configure any checker setting.
+        self.run_check([], ['/bin/true'], env=dict(os.environ,
+                       GOOSE_CHECK_CONFIG='/private/missing.toml', GOOSE_CHECK_EXPECT_EXIT='7'))
+
+    def test_invalid_config_never_launches(self):
+        marker = self.root/'config-must-not-launch'
+        documents = [
+            ('json', b'{"timeout_ms":0}'), ('json', b'{"timeout_ms":86400001}'),
+            ('json', b'{"output_limit":-1}'), ('json', b'{"output_limit":1048577}'),
+            ('json', b'{"expect_exit":256}'), ('json', b'{"expect_exit":false}'),
+            ('json', b'{"expect_exit":1.0}'), ('json', b'{"expect_exit":1e0}'),
+            ('json', b'{"timeout_ms":"SECRET_CONFIG_VALUE"}'),
+            ('json', b'{"SECRET_CONFIG_KEY":1}'), ('json', b'{"command":"SECRET_CONFIG_VALUE"}'),
+            ('json', b'{"expect_exit":0,"expect_exit":1}'),
+            ('json', b'{"expect_exit":0,"expect_\\u0065xit":1}'),
+            ('json', b'{"timeout_ms":[]}'), ('json', b'{"unused":{}}'),
+            ('json', b'[]'), ('json', b'{'),
+            ('toml', b'timeout_ms=0'), ('toml', b'expect_exit=1.0'),
+            ('toml', b'output_limit=true'), ('toml', b'output_limit=[]'),
+            ('toml', b'expect_exit=0\nexpect_exit=1'),
+            ('toml', b'SECRET_CONFIG_KEY="SECRET_CONFIG_VALUE"'),
+            ('toml', b'expect_exit=['),
+        ]
+        for extension, document in documents:
+            path = self.fixture('invalid.' + extension, document)
+            err = self.run_check(['--config', path, '--timeout-ms', '30000', '--expect-exit', '0',
+                                  '--output-limit', '0'], self.child('mark', marker), 2)
+            self.assertNotIn(b'SECRET_CONFIG', err)
+            self.assertFalse(marker.exists())
+        path = self.fixture('valid.json', b'{}')
+        for options in [['--config', path, '--config', path], ['--config', 'relative.toml'],
+                        ['--config', self.root/'settings.yaml'], ['--config', ''],
+                        ['--config', path, '--expect-exit', '+0']]:
+            self.run_check(options, self.child('mark', marker), 2)
+            self.assertFalse(marker.exists())
+        link = self.root/'link.json'; link.symlink_to(path)
+        for path in [link, self.root/'directory.json', self.root/'missing.json']:
+            if path.name == 'directory.json':
+                path.mkdir()
+            self.run_check(['--config', path], self.child('mark', marker), 125)
+            self.assertFalse(marker.exists())
+
+    def test_configured_file_and_process_limits(self):
+        for extension, document in [('json', b'{"expect_exit":0,"output_limit":0,"timeout_ms":86400000}'),
+                                    ('toml', b'expect_exit=0\noutput_limit=0\ntimeout_ms=86400000\n')]:
+            exact = document + b' ' * (65536 - len(document))
+            path = self.fixture('exact.' + extension, exact)
+            self.run_check(['--config', path], ['/bin/true'])
+            marker = self.root/'oversize-config-must-not-launch'
+            Path(path).write_bytes(exact + b' ')
+            self.run_check(['--config', path], self.child('mark', marker), 125)
+            self.assertFalse(marker.exists())
+        path = self.fixture('limits.toml', b'output_limit=4\ntimeout_ms=30000\n')
+        expected = self.fixture('four', b'xxxx')
+        self.run_check(['--config', path, '--stdout', expected], self.child('output', 4))
+        self.run_check(['--config', path], self.child('output', 5), 125)
+        too_big = self.fixture('five', b'xxxxx')
+        marker = self.root/'expected-fixture-must-not-launch'
+        self.run_check(['--config', path, '--stdout', too_big], self.child('mark', marker), 125)
+        self.assertFalse(marker.exists())
+        self.run_check(['--config', path, '--stdout', too_big, '--output-limit', '5'], self.child('output', 5))
+        # Use the same observable live-child/reaping test under a configured budget.
+        self.held(configured=True)
+
     def test_numeric_and_argument_limits(self):
         marker = self.root/'not-launched'
         for option, value in [('--expect-exit',''), ('--expect-exit','-0'),
@@ -149,9 +228,12 @@ class Checker(unittest.TestCase):
                 if writer is not None:
                     os.close(writer)
 
-    def held(self, number=None):
+    def held(self, number=None, configured=False):
         marker = self.root/f'pid-{number}'
         options = ['--timeout-ms','2000' if number is None else '10000']
+        if configured:
+            path = self.fixture('deadline.toml', b'timeout_ms=2000\n')
+            options = ['--config', path]
         with owned([TOOL,*options,'--',*self.child('hold',marker)]) as p:
             parent_fd = os.pidfd_open(p.pid)
             child_fd = None

@@ -5,6 +5,10 @@ revisions and hashes for each bundled source, manifest, license and notice.
 
 - goose-process: `470c23f8244d17ff2597bca3da35f3a98cc3ca50` (experimental v0.1.0).
 - goose-fs: `910576e745e9ef4afc7807c4843ddc948836189a`.
+- goose-config: `f7bef7dcfeab2ca95c94d92d0fbb2320ab3dcb05` (experimental, untagged).
+  Its nested goose-toml parser license, modification notice and upstream
+  attribution are retained in `vendor/goose-config/vendor/` and
+  `vendor/goose-config/THIRD_PARTY_NOTICES.md`.
 
 Each dependency's Apache-2.0 license is retained in its vendor directory.
 The project-specific notices there apply to the bundled sources. Their upstream

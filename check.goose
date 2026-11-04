@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 import process from "./vendor/goose-process";
 import fs from "./vendor/goose-fs";
+import config from "./vendor/goose-config";
+import .settings;
 import std;
 import os;
 
@@ -11,7 +13,7 @@ extern fn recover(pid: i64) = "gc_recover";
 extern fn diagnostic(message: const u8[:]) = "gc_diagnostic";
 
 fn usage() {
-    diagnostic("usage: goose-check [--stdin ABSFILE] [--stdout ABSFILE] [--expect-exit N] [--timeout-ms N] [--output-limit N] -- /absolute/program [args...]\n");
+    diagnostic("usage: goose-check [--config ABSFILE.json|ABSFILE.toml] [--stdin ABSFILE] [--stdout ABSFILE] [--expect-exit N] [--timeout-ms N] [--output-limit N] -- /absolute/program [args...]\n");
 }
 fn fail(message: const u8[:], code: i32) {
     diagnostic(str("goose-check: ", message, "\n")); exit(code);
@@ -32,6 +34,7 @@ fn main() {
     if argv.len == 2 && argv[1] == "--help" { usage(); return; }
     var input_path:    const u8[:] = "";
     var expected_path: const u8[:] = "";
+    var config_path:   const u8[:] = "";
     var expected_exit: i64         = 0;
     var timeout:       i64         = 30000;
     var limit:         i64         = 65536;
@@ -41,11 +44,14 @@ fn main() {
         let option = argv[position];
         let bit: i64 = if option == "--stdin" { 1 } else if option == "--stdout" { 2 }
             else if option == "--expect-exit" { 4 } else if option == "--timeout-ms" { 8 }
-            else if option == "--output-limit" { 16 } else { 0 };
+            else if option == "--output-limit" { 16 } else if option == "--config" { 32 } else { 0 };
         if bit == 0 || (seen & bit) != 0 || position + 1 >= argv.len { usage(); exit(2); }
         seen |= bit;
         let value = argv[position + 1];
-        if bit == 1 || bit == 2 {
+        if bit == 32 {
+            if !settings::valid_path(value) { fail("config requires a strict absolute .json or .toml path", 2); }
+            config_path = value;
+        } else if bit == 1 || bit == 2 {
             if !fs::valid_path(value) { fail("fixture requires a strict absolute path", 2); }
             if bit == 1 { input_path = value; } else { expected_path = value; }
         } else {
@@ -69,6 +75,20 @@ fn main() {
         if argument.len > process::MAX_ARGUMENT_LENGTH || argument_bytes > process::MAX_ARGUMENT_BYTES {
             fail("command exceeds argument bounds", 2);
         }
+    }
+    if config_path.len > 0 {
+        // Keep CLI's digit-only grammar and leading-zero acceptance. Canonical
+        // validated integers avoid introducing the config token-length cap.
+        let exit_text = str(expected_exit); let timeout_text = str(timeout); let limit_text = str(limit);
+        var overrides: config::Override[>..] = [];
+        if (seen & 4) != 0 { overrides.push(config::Override { "expect_exit", exit_text, "--expect-exit" }); }
+        if (seen & 8) != 0 { overrides.push(config::Override { "timeout_ms", timeout_text, "--timeout-ms" }); }
+        if (seen & 16) != 0 { overrides.push(config::Override { "output_limit", limit_text, "--output-limit" }); }
+        var limits = settings::Limits { .. };
+        let error = settings::load(config_path, overrides, limits);
+        if error == settings::Error.Read { fail("cannot read bounded config file", 125); }
+        if error != settings::Error.None { fail("invalid config defaults", 2); }
+        expected_exit = limits.expected_exit; timeout = limits.timeout_ms; limit = limits.output_limit;
     }
     var input:    u8[>..] = [];
     var expected: u8[>..] = [];
