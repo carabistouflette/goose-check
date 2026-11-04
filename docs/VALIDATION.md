@@ -91,3 +91,50 @@ Anonymous Git access, public visibility, default main, Apache-2.0 detection and
 private vulnerability reporting were verified. The source archive contained 41
 source/document/license files, no toolchain/build state, symlinks or executable
 binaries. No release tag or stability promotion is implied by publication.
+
+## Explicit configuration consumer
+
+Feature `95dbfc5224f05527b54ce8d135df773144abd4bf` integrates the supported
+goose-config API into this existing application. Follow-ups
+`8f6df568a0f362108a950ee2b0a508dbc2c5b572` and
+`a49857d996dc9978f06808d083efef07764ba8a1` add configured compiler workflows,
+complete numeric-option order coverage, and atomic PID-readiness publication.
+The latter prevents a controller from reading a newly created but empty marker.
+
+The bundled goose-config pin is
+`f7bef7dcfeab2ca95c94d92d0fbb2320ab3dcb05`. All ten vendored artifacts match
+immutable upstream Git objects and the checked-in hash inventory, including
+six unmodified runtime files, both complete licenses and nested parser notices.
+Existing fs/process pins, native caller code, signal guards, compiler wrapper
+and native source fingerprint are unchanged from `3dae698`.
+
+The actual CLI suite now has ten test groups. Configuration checks include both
+formats, both file/CLI orders for each numeric setting, tokens with more than 128
+leading zeroes, exact 64KiB files and one-byte-over-limit failures, file/key
+removal between invocations, strict types/ranges/duplicates, diagnostics without
+raw values, configured output/expected-fixture limits and actual child timeout/
+reaping. Rejected inputs use marker commands to prove no launch. Real C and
+Goose compiler workflows use selected defaults. Existing binary-argument,
+broken-stderr, cancellation and three ownership-fault scenarios remain active.
+
+Reproduce with the compiler pinned in `GOOSE_REVISION`:
+
+```sh
+make check test test-faults example CC=gcc
+make test test-faults example CC=clang
+make sanitize SANITIZER_CC=gcc
+make sanitize SANITIZER_CC=clang
+make analyze
+```
+
+All commands above passed locally after the atomic readiness fix, including
+release/debug and sanitizer runs of the ten CLI groups and three ownership
+fault scenarios with each C compiler.
+
+Independent design, contract and security/standards reviewers checked the
+integration and frozen dependency provenance. Coverage feedback added timeout
+and output-limit override cases; no checker/config runtime defect was found.
+The repository contains 54 tracked source/document/license files and no generated
+build/cache/binary assets. These are functional checks, not throughput or memory
+measurements. The [configuration contract](CONFIGURATION.md) records I/O limits,
+per-invocation rereads and the upstream incomplete sustained-fuzz release gate.
