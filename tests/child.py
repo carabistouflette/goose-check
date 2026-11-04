@@ -25,7 +25,10 @@ elif mode == 'hold':
     signal.signal(signal.SIGINT, lambda *_: sys.exit(0))
     signal.signal(signal.SIGTERM, lambda *_: sys.exit(0))
     os.write(2, b'diagnostic-ready\n')
-    Path(sys.argv[2]).write_text(str(os.getpid()))
+    marker = Path(sys.argv[2])
+    temporary = marker.with_name(marker.name + '.ready')
+    temporary.write_text(str(os.getpid()))
+    temporary.replace(marker)
     time.sleep(60)
 else:
     raise SystemExit(99)
