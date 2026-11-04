@@ -1,0 +1,13 @@
+goose-check
+Copyright 2026 goose-check contributors
+
+Includes reviewed Apache-2.0 sources from goose-process and goose-fs.
+Their source revisions, licenses and notices are retained in vendor/.
+
+Application signal guard and exceptional recovery adapted from Honk.
+Copyright 2026 Honk contributors.
+
+Setup/fingerprint tooling adapts goose-process, goose-log and goose-json tooling.
+Copyright 2026 contributors to those projects.
+
+Licensed under the Apache License, Version 2.0. See LICENSE and THIRD_PARTY.md.

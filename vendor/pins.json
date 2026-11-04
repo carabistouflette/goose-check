@@ -1,0 +1,30 @@
+{
+  "goose-process": {
+    "repository": "https://github.com/carabistouflette/goose-process",
+    "revision": "470c23f8244d17ff2597bca3da35f3a98cc3ca50",
+    "sha256": {
+      "LICENSE": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+      "NOTICE": "8c33b5ff536c52e6b98545218ff2923a12d3fadf4d3dfd72e396dfafc8e54fdd",
+      "THIRD_PARTY.md": "f93b9ab91aead544f0b6d8957787d9c31dc6aaae5fe3fe4a752e999aee9f0d95",
+      "native/internal.h": "b2c259a1cca4ad5dabd41fa979a4bfdaa6b143e356944d3b0dc57f824d2f901a",
+      "native/launch.c": "1b893ad4bb688af81d8f2ef1e3dbddaabcadeede23768e4da6d518b86c607c3e",
+      "native/process.c": "30bc91f9fbefb82e6fd61b0723047a638339dfd736a6777be836965e0fb04819",
+      "native/process.h": "cea1518e8bdf6a37710473f9f96d5e588adeafbace7b7393c1b3f5a39ebe8d38",
+      "process.build": "8ad78d100d5840ac5b96356d2cac08af1189a86ef738878f3457945365671a26",
+      "process.goose": "b28d4f10a408d5eaf444550fab8861a80b63a358f4aa0ce49174d59ca34c6327"
+    }
+  },
+  "goose-fs": {
+    "repository": "https://github.com/carabistouflette/goose-fs",
+    "revision": "910576e745e9ef4afc7807c4843ddc948836189a",
+    "sha256": {
+      "LICENSE": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+      "fs.build": "4a70bc1f931903fb0b49dbd013338a6761f6eb10dca5c59bd2f19443a47ecf99",
+      "fs.goose": "c5e44adb947cd4c15d0d3f9aaf52b0da88bf4a13cf6bcecf5999bafba0bef988",
+      "native/fs.c": "226b5a9f1ae7693acd6adde61583cb9994911a586ec71f510c4f016194fe23f0",
+      "native/fs.h": "0afd84e5119c0316eb43263afaacf918a702a76714fec5eaaff7dcf9211479f4",
+      "native/fs_internal.h": "aeb2c590efc6c0dcc61c1a662ab4eeb35f6fc32d8aa89360a99acb444e82d13c",
+      "native/handles.c": "ae8e30070697258499a55df04d59d4a4106d23e28a6e745c1438a66734dcc7ce"
+    }
+  }
+}
