@@ -12,6 +12,30 @@
 #include <sys/wait.h>
 #include <time.h>
 #include <unistd.h>
+/* Best-effort application diagnostics must never abandon child ownership just
+   because their inherited pipe has no reader. No spawn runs during this call;
+   changing this application's disposition does not change the child's. */
+static void diagnostic(const void *data, size_t size) {
+  int saved = errno;
+  struct sigaction ignored = {.sa_handler = SIG_IGN}, previous;
+  sigemptyset(&ignored.sa_mask);
+  if (sigaction(SIGPIPE, &ignored, &previous) == 0) {
+    const unsigned char *position = data;
+    while (size) {
+      ssize_t count = write(STDERR_FILENO, position, size);
+      if (count < 0 && errno == EINTR) continue;
+      if (count <= 0) break;
+      position += count; size -= (size_t)count;
+    }
+    (void)sigaction(SIGPIPE, &previous, NULL);
+  }
+  errno = saved;
+}
+typedef struct { const unsigned char *data; int64_t size; } gc_bytes;
+void gc_diagnostic(gc_bytes message) {
+  if (message.size < 0 || (message.size && !message.data)) abort();
+  diagnostic(message.data, (size_t)message.size);
+}
 // Application-owned cancellation guard. Handlers never use child identities.
 static volatile sig_atomic_t pending_signals = 0;
 static volatile sig_atomic_t interrupted = 0;
@@ -105,7 +129,8 @@ void gc_recover(int64_t transferred) {
       signalled = true;
     }
     if (!diagnosed) {
-      fputs("goose-check: recovering transferred child before returning\n", stderr);
+      const char message[] = "goose-check: recovering transferred child before returning\n";
+      diagnostic(message, sizeof message - 1);
       diagnosed = true;
     }
     // Permission-denied waits/signals must not abandon ownership or spin. A child

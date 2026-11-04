@@ -8,12 +8,13 @@ extern fn guard_begin() -> bool = "gc_guard_begin";
 extern fn guard_take(pid: i64) -> i64 = "gc_guard_take";
 extern fn guard_end() -> i64 = "gc_guard_end";
 extern fn recover(pid: i64) = "gc_recover";
+extern fn diagnostic(message: const u8[:]) = "gc_diagnostic";
 
 fn usage() {
-    write_stderr("usage: goose-check [--stdin ABSFILE] [--stdout ABSFILE] [--expect-exit N] [--timeout-ms N] [--output-limit N] -- /absolute/program [args...]\n");
+    diagnostic("usage: goose-check [--stdin ABSFILE] [--stdout ABSFILE] [--expect-exit N] [--timeout-ms N] [--output-limit N] -- /absolute/program [args...]\n");
 }
 fn fail(message: const u8[:], code: i32) {
-    write_stderr(str("goose-check: ", message, "\n")); exit(code);
+    diagnostic(str("goose-check: ", message, "\n")); exit(code);
 }
 fn decimal(text: const u8[:], maximum: i64) -> i64 {
     if text.len == 0 { return -1; }
@@ -118,17 +119,17 @@ fn main() {
         fail("command launch failed", if status.os_error == 2 { 127 } else { 126 });
     }
     if status.error != process::Error.None {
-        write_stderr(str("goose-check: process error ", status.error, "; errno ", status.os_error, "\n")); exit(125);
+        diagnostic(str("goose-check: process error ", status.error, "; errno ", status.os_error, "\n")); exit(125);
     }
     if status.signal != 0 || status.exit_code != expected_exit {
-        write_stderr(str("goose-check: exit mismatch; expected ", expected_exit,
+        diagnostic(str("goose-check: exit mismatch; expected ", expected_exit,
             ", actual ", status.exit_code, ", signal ", status.signal, "\n")); exit(1);
     }
     let actual = process::stdout(child);
     if actual != expected {
         var offset: i64 = 0;
         while offset < min(actual.len, expected.len) && actual[offset] == expected[offset] { offset += 1; }
-        write_stderr(str("goose-check: stdout mismatch at byte ", offset,
+        diagnostic(str("goose-check: stdout mismatch at byte ", offset,
             "; expected length ", expected.len, ", actual length ", actual.len, "\n")); exit(1);
     }
 }

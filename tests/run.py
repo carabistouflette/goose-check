@@ -19,8 +19,8 @@ CHILD = ROOT / 'tests/child.py'
 PYTHON = str(Path(sys.executable).resolve())
 
 @contextmanager
-def owned(arguments, env=None):
-    p = subprocess.Popen(arguments, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+def owned(arguments, env=None, stderr=subprocess.PIPE):
+    p = subprocess.Popen(arguments, stdout=subprocess.PIPE, stderr=stderr,
                          start_new_session=True, env=env)
     try:
         yield p
@@ -112,9 +112,42 @@ class Checker(unittest.TestCase):
         self.run_check([], [text], 126)
         text.chmod(0o700)
         self.run_check([], [text], 126)  # No ENOEXEC shell fallback.
-        args = ['', 'with spaces', ';literal', '--flag', 'line\nbreak']
+        args = ['', 'with spaces', ';literal', '--flag', 'line\nbreak', os.fsdecode(b'\xff')]
         expected = self.fixture('argv', json.dumps(args).encode())
         self.run_check(['--stdout', expected], self.child('args', *args))
+
+    def test_numeric_and_argument_limits(self):
+        marker = self.root/'not-launched'
+        for option, value in [('--expect-exit',''), ('--expect-exit','-0'),
+                              ('--timeout-ms','86400001'), ('--output-limit','1048577'),
+                              ('--timeout-ms','1_000'), ('--expect-exit',' 0'),
+                              ('--expect-exit','\u0660')]:
+            self.run_check([option,value],self.child('mark',marker),2)
+            self.assertFalse(marker.exists())
+        self.run_check(['--expect-exit','000127'],self.child('exit',127))
+        self.run_check(['--output-limit','0000'],['/bin/true'])
+        self.run_check([],['/bin/true',*(['']*4095)])
+        self.run_check([],self.child('mark',marker)+['']*4093,2)
+        self.assertFalse(marker.exists())
+        # Only exercise this CLI bound when the kernel can launch the checker
+        # itself with the larger argument set (an independent, smaller limit).
+        if os.sysconf('SC_ARG_MAX') > 1250000:
+            self.run_check([],self.child('mark',marker)+['a'*131000]*9,2)
+            self.assertFalse(marker.exists())
+
+    def test_broken_diagnostic_stderr(self):
+        for arguments, code in [(['--bad'],2), (['--','/no/such/goose-check-command'],127),
+                                (['--',*self.child('output',1)],1)]:
+            reader, writer = os.pipe()
+            os.close(reader)
+            try:
+                with owned([TOOL,*arguments],stderr=writer) as p:
+                    os.close(writer); writer=None
+                    out,_=p.communicate(timeout=10)
+                    self.assertEqual((p.returncode,out),(code,b''))
+            finally:
+                if writer is not None:
+                    os.close(writer)
 
     def held(self, number=None):
         marker = self.root/f'pid-{number}'

@@ -31,6 +31,10 @@ Child exits 126/127 are ordinary outcomes that can match --expect-exit.
 A latched parent SIGINT/SIGTERM wins as 128+signal after child cleanup. Diagnostics
 contain mismatch offsets/lengths and error classifications, never raw fixture,
 argument or environment contents. Child stderr is intentionally inherited.
+Checker diagnostics are best effort: a broken stderr pipe cannot abort owned
+cleanup. The standalone application temporarily ignores SIGPIPE around its own
+diagnostic writes, then restores its prior disposition; no spawn occurs during
+those writes. The spawned command retains its own normal signal policy.
 
 A scoped application signal guard is established before start. Handlers only
 latch flags. A normal Child step loop forwards signals by pidfd and always

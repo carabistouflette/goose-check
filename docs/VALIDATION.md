@@ -22,6 +22,14 @@ The trace enforces order and no signal after terminal ownership ends. Fault
 hooks are absent from production builds. Denials are selected simulations,
 not blanket syscall restrictions or real credential changes.
 
+A security reviewer reproduced a live-child abandonment in an initial unpublished
+bridge: a recovery diagnostic to broken stderr received SIGPIPE before reaping.
+Application diagnostic writes now have scoped SIGPIPE protection. The regression
+requires terminal reaping and recovery completion with a silent long-lived child
+and no stderr reader. Its private test subreaper and reserved-session cleanup
+also recover adopted children if this behavior regresses. Normal CLI failures
+still return their defined status when diagnostic stderr is broken.
+
 Compiler wrappers freeze the actual compiler path/bytes, wrapper source,
 instrumentation and fault-fixture bytes into distinct filenames. This matters
 because Goose identifies a toolchain using its path/style/version, rather than

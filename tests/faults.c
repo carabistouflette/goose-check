@@ -35,6 +35,7 @@ static void guarded(void) {
     assert(sigaction(SIGCHLD, NULL, &action) == 0);
     assert(action.sa_handler == SIG_DFL && !(action.sa_flags & SA_NOCLDWAIT));
     assert(sigaction(SIGTERM, NULL, &action) == 0 && (action.sa_flags & SA_SIGINFO));
+    assert(sigaction(SIGPIPE, NULL, &action) == 0 && action.sa_handler == SIG_DFL);
 }
 bool __real_gc_guard_begin(void);
 bool __wrap_gc_guard_begin(void) {
