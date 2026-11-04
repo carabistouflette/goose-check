@@ -23,8 +23,8 @@ debug: check
 	mkdir -p .build
 	"$(GOOSE)" build check.goose --cc "$$(python3 scripts/compiler.py --cc "$(CC)" $(SANITIZER_OPTION))" --debug --no-bce -o .build/goose-check-debug
 test: build debug
-	$(RUN_ENV) python3 tests/run.py --tool .build/goose-check --goose "$(abspath $(GOOSE))" --cc "$$(command -v "$(CC)")"
-	$(RUN_ENV) python3 tests/run.py --tool .build/goose-check-debug --goose "$(abspath $(GOOSE))" --cc "$$(command -v "$(CC)")"
+	$(RUN_ENV) python3 tests/run.py --tool .build/goose-check --goose "$(GOOSE)" --cc "$$(command -v "$(CC)")"
+	$(RUN_ENV) python3 tests/run.py --tool .build/goose-check-debug --goose "$(GOOSE)" --cc "$$(command -v "$(CC)")"
 sanitize:
 	$(MAKE) test test-faults CC="$(SANITIZER_CC)" SANITIZE=1 GOOSE="$(GOOSE)"
 

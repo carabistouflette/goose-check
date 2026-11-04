@@ -138,3 +138,10 @@ The repository contains 54 tracked source/document/license files and no generate
 build/cache/binary assets. These are functional checks, not throughput or memory
 measurements. The [configuration contract](CONFIGURATION.md) records I/O limits,
 per-invocation rereads and the upstream incomplete sustained-fuzz release gate.
+
+The follow-up anonymous checkout audit exposed a Makefile-only compiler override
+bug: GNU Make's word-based `abspath` split an absolute `GOOSE` path containing
+spaces before passing it to the CLI tests. The Makefile now passes the quoted
+path unchanged to the test runner's existing `Path.resolve()` step, preserving
+both relative and absolute compiler overrides. This does not change checker
+execution or dependency sources.
