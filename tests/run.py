@@ -46,7 +46,7 @@ class Checker(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory(prefix='goose check tests ')
         self.addCleanup(self.temp.cleanup)
-        self.root = Path(self.temp.name)
+        self.root = Path(self.temp.name).resolve()
 
     def fixture(self, name, value):
         p = self.root/name
@@ -156,7 +156,7 @@ class Checker(unittest.TestCase):
                 self.held(number)
 
     def test_real_compilers(self):
-        source = self.fixture('source.c', b'#include <stdio.h>\nint main(void){int c;while((c=getchar())!=EOF)putchar(c);return 0;}\n')
+        source = str(ROOT / 'examples/echo.c')
         program = self.root/'compiled'
         self.run_check(['--stdin',source,'--timeout-ms',60000],[CC,'-x','c','-','-o',program])
         data=self.fixture('compiler-stdin',b'compiled\x00program\xff\n')
