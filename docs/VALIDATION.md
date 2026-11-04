@@ -78,3 +78,16 @@ Two independent design reviewers, independent security and contract reviewers,
 and a final independent publication auditor examined the new project. The
 security reviewer found/reproduced the diagnostic ownership bug before initial
 publication; its fix and failure-cleanup regression are retained in history.
+
+## Public source checkpoint
+
+Initial public main `a032bbf2be047085f4ec7d7b8bcd811a8167297b` passed both
+GCC/Clang hosted jobs in [CI 41907398317](https://github.com/carabistouflette/goose-check/actions/runs/41907398317).
+A fresh HTTPS clone of that exact public source fetched/built its own pinned
+compiler with `make setup`, then passed `make check test test-faults example
+CC=gcc` and `make test test-faults example CC=clang`, without compiler overrides
+or sibling sources. Both application and compiler trees remained clean.
+Anonymous Git access, public visibility, default main, Apache-2.0 detection and
+private vulnerability reporting were verified. The source archive contained 41
+source/document/license files, no toolchain/build state, symlinks or executable
+binaries. No release tag or stability promotion is implied by publication.
