@@ -21,12 +21,13 @@ Run a trusted command with these defaults:
 Numeric CLI options override the file regardless of option order:
 
 ```sh
-.build/goose-check --expect-exit 7 --config "$PWD/examples/checker.toml" -- /bin/sh -c 'exit 7'
+.build/goose-check --expect-exit 1 --config "$PWD/examples/checker.toml" -- /bin/false
 ```
 
-The shell in that example is an explicitly selected executable. The checker
-does not invoke an implicit shell. Executables, arguments and input/expected
-fixture paths remain explicit CLI inputs; the file cannot supply them.
+Executables, arguments and input/expected fixture paths remain explicit CLI
+inputs; the file cannot supply them. `make example` uses these defaults to
+compile and check a real C program. The CLI suite also uses selected defaults
+with valid and invalid pinned-Goose compiler invocations.
 
 ## Values and precedence
 

@@ -36,9 +36,9 @@ test-faults: check
 
 .PHONY: example analyze
 example: build
-	.build/goose-check --stdin "$(CURDIR)/examples/echo.c" --timeout-ms 60000 -- "$$(command -v "$(CC)")" -x c - -o "$(CURDIR)/.build/echo-example"
+	.build/goose-check --config "$(CURDIR)/examples/checker.toml" --stdin "$(CURDIR)/examples/echo.c" -- "$$(command -v "$(CC)")" -x c - -o "$(CURDIR)/.build/echo-example"
 	python3 -c 'from pathlib import Path; Path(".build/example.bin").write_bytes(b"hello\x00Goose\xff\n")'
-	.build/goose-check --stdin "$(CURDIR)/.build/example.bin" --stdout "$(CURDIR)/.build/example.bin" -- "$(CURDIR)/.build/echo-example"
+	.build/goose-check --config "$(CURDIR)/examples/checker.toml" --stdin "$(CURDIR)/.build/example.bin" --stdout "$(CURDIR)/.build/example.bin" -- "$(CURDIR)/.build/echo-example"
 analyze:
 	mkdir -p .build
 	clang --analyze -std=c11 -Wall -Wextra -Werror native/caller.c -o .build/caller.plist

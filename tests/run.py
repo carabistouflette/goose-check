@@ -134,6 +134,14 @@ class Checker(unittest.TestCase):
         # Environment does not select a file or configure any checker setting.
         self.run_check([], ['/bin/true'], env=dict(os.environ,
                        GOOSE_CHECK_CONFIG='/private/missing.toml', GOOSE_CHECK_EXPECT_EXIT='7'))
+        # Nonzero long CLI tokens and both orders for the other two settings.
+        path = self.fixture('precedence.json', b'{"timeout_ms":1,"output_limit":0}')
+        expected = self.fixture('precedence.stdout', b'xxxx')
+        numeric = ['--timeout-ms', '0' * 512 + '30000', '--output-limit', '0' * 512 + '4']
+        for options in [numeric + ['--config', path], ['--config', path] + numeric]:
+            self.run_check(options + ['--stdout', expected], self.child('output', 4))
+            # This command outlives the file's 1ms budget if its CLI override is lost.
+            self.run_check(options, [PYTHON, '-c', 'import time; time.sleep(.05)'])
 
     def test_invalid_config_never_launches(self):
         marker = self.root/'config-must-not-launch'
@@ -281,6 +289,10 @@ class Checker(unittest.TestCase):
         self.run_check(['--stdout',expected,'--timeout-ms',60000],[GOOSE,'run',good])
         bad=self.fixture('bad.goose',b'fn main(){unknown_function();}\n')
         self.run_check(['--expect-exit',1,'--timeout-ms',60000],[GOOSE,'check',bad])
+        defaults=self.fixture('compiler-defaults.toml',b'timeout_ms=60000\noutput_limit=4096\n')
+        self.run_check(['--config',defaults,'--stdout',expected],[GOOSE,'run',good])
+        Path(defaults).write_bytes(b'timeout_ms=60000\noutput_limit=4096\nexpect_exit=1\n')
+        self.run_check(['--config',defaults],[GOOSE,'check',bad])
 
 if __name__=='__main__':
     signal.signal(signal.SIGCHLD,signal.SIG_DFL)
