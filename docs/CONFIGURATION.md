@@ -29,6 +29,10 @@ inputs; the file cannot supply them. `make example` uses these defaults to
 compile and check a real C program. The CLI suite also uses selected defaults
 with valid and invalid pinned-Goose compiler invocations.
 
+`output_limit` applies independently to captured stdout and opt-in checked stderr.
+`--stderr ABSFILE` is a CLI fixture option; the config schema has no new keys and
+cannot enable stderr checking. Stderr remains inherited live when it is absent.
+
 ## Values and precedence
 
 | Field | Built-in default | Accepted values |

@@ -1,7 +1,8 @@
 # goose-check
 
 A small command-regression checker written in Goose. Feed a binary stdin fixture,
-compare exact stdout and exit status, and keep stderr live. Useful for compiler
+compare exact stdout and exit status, and keep stderr live by default. Optionally
+check stderr incrementally against a fixture. Useful for compiler
 and CLI tests in Makefiles or CI. Apache-2.0; experimental, with no release tag.
 
 ```sh
@@ -17,6 +18,8 @@ Success is quiet and exits 0. A mismatch exits 1 and reports its first differing
 byte offset, lengths or exit/signal status on stderr. Fixture/argument contents
 are not echoed in checker diagnostics. The command's stderr is intentionally
 inherited, so compiler diagnostics and progress remain live.
+With `--stderr ABSFILE`, diagnostics are instead checked as bounded chunks arrive;
+raw child stderr is suppressed in that explicit mode. See [streamed checking](docs/STREAMED_STDERR.md).
 
 ## Compile and check a real program
 
@@ -39,9 +42,10 @@ goose-check [options] -- /absolute/program [arguments...]
 
 --stdin ABSFILE       finite stdin fixture (default: empty; maximum 1 MiB)
 --stdout ABSFILE      expected stdout (default: empty; bounded by output-limit)
+--stderr ABSFILE      opt-in expected stderr (default: inherited live)
 --expect-exit N       expected normal exit, 0..255 (default: 0)
 --timeout-ms N        finite process budget, 1..86400000 (default: 30000)
---output-limit N      stdout capture limit, 0..1048576 (default: 65536)
+--output-limit N      independent limit for each checked stream, 0..1048576 (default: 65536)
 --config ABSFILE      explicit .json/.toml numeric defaults (maximum 64 KiB)
 ```
 

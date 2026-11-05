@@ -3,7 +3,7 @@
 All project sources are Apache-2.0. `vendor/pins.json` records complete upstream
 revisions and hashes for each bundled source, manifest, license and notice.
 
-- goose-process: `470c23f8244d17ff2597bca3da35f3a98cc3ca50` (experimental v0.1.0).
+- goose-process: `35b74eff63118abdd5b00603e1de4bf8ded110a2` (reviewed streaming implementation; experimental, no new tag).
 - goose-fs: `910576e745e9ef4afc7807c4843ddc948836189a`.
 - goose-config: `f7bef7dcfeab2ca95c94d92d0fbb2320ab3dcb05` (experimental, untagged).
   Its nested goose-toml parser license, modification notice and upstream
