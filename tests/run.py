@@ -128,7 +128,7 @@ class Checker(unittest.TestCase):
         oracle = self.fixture('secret stderr', b'PRIVATE_STDERR_FIXTURE')
         err = self.run_check(['--stderr', oracle], self.child('stderr', 2), 1)
         self.assertNotIn(b'PRIVATE_STDERR_FIXTURE', err)
-        for limit in [0, 8192, 65536]:
+        for limit in [0, 8192, 65536, 1048576]:
             oracle = self.fixture('bounded stderr', (bytes(range(256)) * 4096)[:limit])
             err = self.run_check(['--stderr', oracle, '--output-limit', limit], self.child('stderr', limit + 1), 125)
             self.assertIn(b'OutputLimit', err)
@@ -144,7 +144,7 @@ class Checker(unittest.TestCase):
         marker = self.root / 'not-launched-stderr'
         command = self.child('mark', marker)
         empty = self.fixture('empty stderr', b'')
-        for options, code in [(['--stderr', 'relative'], 2), (['--stderr', empty, '--stderr', empty], 2),
+        for options, code in [(['--stderr'], 2), (['--stderr', 'relative'], 2), (['--stderr', empty, '--stderr', empty], 2),
                               (['--stderr', self.root / 'missing'], 125), (['--stderr', self.root], 125)]:
             self.run_check(options, command, code); self.assertFalse(marker.exists())
         link = self.root / 'stderr-link'; link.symlink_to(empty)
@@ -350,6 +350,17 @@ class Checker(unittest.TestCase):
         self.run_check(['--config',defaults,'--stdout',expected],[GOOSE,'run',good])
         Path(defaults).write_bytes(b'timeout_ms=60000\noutput_limit=4096\nexpect_exit=1\n')
         self.run_check(['--config',defaults],[GOOSE,'check',bad])
+        # Independent ordinary compiler invocations supply the byte oracle;
+        # the checker must then validate those actual diagnostics incrementally.
+        bad_c = self.fixture('bad.c', b'int main(void) { not valid C; }\n')
+        for index, command in enumerate([[GOOSE, 'check', bad], [CC, '-x', 'c', '-fsyntax-only', bad_c]]):
+            with owned(command) as compiler:
+                out, diagnostics = compiler.communicate(timeout=30)
+                self.assertEqual(compiler.returncode, 1)
+                self.assertEqual(out, b'')
+                self.assertTrue(0 < len(diagnostics) <= 65536)
+            stderr = self.fixture(f'compiler-{index}.stderr', diagnostics)
+            self.assertEqual(self.run_check(['--expect-exit', 1, '--stderr', stderr, '--timeout-ms', 60000], command), b'')
 
 if __name__=='__main__':
     signal.signal(signal.SIGCHLD,signal.SIG_DFL)

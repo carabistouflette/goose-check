@@ -16,7 +16,7 @@ elif mode == 'output':
     sys.stdout.buffer.write(b'x' * int(sys.argv[2]))
 elif mode == 'stderr':
     size = int(sys.argv[2])
-    sys.stderr.buffer.write((bytes(range(256)) * 4096)[:size])
+    sys.stderr.buffer.write((bytes(range(256)) * 4097)[:size])
 elif mode == 'dual':
     remaining = int(sys.argv[2])
     data = bytes(range(256)) * 64
