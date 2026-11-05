@@ -14,6 +14,20 @@ if mode == 'echo':
     sys.stdout.buffer.flush()
 elif mode == 'output':
     sys.stdout.buffer.write(b'x' * int(sys.argv[2]))
+elif mode == 'stderr':
+    size = int(sys.argv[2])
+    sys.stderr.buffer.write((bytes(range(256)) * 4096)[:size])
+elif mode == 'dual':
+    remaining = int(sys.argv[2])
+    data = bytes(range(256)) * 64
+    while remaining:
+        chunk = data[:min(remaining, len(data))]
+        sys.stdout.buffer.write(chunk); sys.stdout.buffer.flush()
+        sys.stderr.buffer.write(chunk); sys.stderr.buffer.flush()
+        remaining -= len(chunk)
+    while chunk := os.read(0, 16384):
+        sys.stdout.buffer.write(chunk)
+    sys.stdout.buffer.flush()
 elif mode == 'exit':
     raise SystemExit(int(sys.argv[2]))
 elif mode == 'args':

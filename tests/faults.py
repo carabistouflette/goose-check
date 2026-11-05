@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 import signal
 import tempfile
+from itertools import product
 from run import owned, PYTHON, CHILD
 
 signal.signal(signal.SIGCHLD,signal.SIG_DFL)
@@ -13,13 +14,18 @@ p=argparse.ArgumentParser()
 p.add_argument('--tool',required=True)
 a=p.parse_args()
 tool=str(Path(a.tool).resolve())
-for mode in ['prestart','transfer']:
+for mode, checked in product(['prestart','transfer'], [False, True]):
     with tempfile.TemporaryDirectory(prefix='goose check fault ') as temporary:
         root=Path(temporary)
         marker=root/'marker'; trace=root/'trace'
         env={**os.environ,'GOOSE_CHECK_FAULT':mode,'GOOSE_CHECK_TRACE':str(trace)}
         child_mode='mark' if mode=='prestart' else 'hold'
-        with owned([tool,'--',PYTHON,str(CHILD),child_mode,str(marker)],env=env) as child:
+        options = []
+        if checked:
+            expected_stderr = root / 'expected stderr'
+            expected_stderr.write_bytes(b'diagnostic-ready\n')
+            options = ['--stderr', str(expected_stderr)]
+        with owned([tool,*options,'--',PYTHON,str(CHILD),child_mode,str(marker)],env=env) as child:
             out,err=child.communicate(timeout=10)
             expected=143 if mode=='prestart' else 125
             if child.returncode != expected or out:
@@ -32,7 +38,7 @@ for mode in ['prestart','transfer']:
                       'recover_begin','deny_recovery_wait','deny_recovery_wait',
                       'kill_owned','terminal','recover_end']:
             raise SystemExit(('transfer lifecycle differs',events))
-        print(mode+' ownership fixture passed')
+        print(mode+(' checked-stderr' if checked else '')+' ownership fixture passed')
 
 # A private subreaper lets the controller recover an adopted child if the
 # checker regresses and dies before its transferred-child cleanup completes.

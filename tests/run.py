@@ -116,6 +116,53 @@ class Checker(unittest.TestCase):
         expected = self.fixture('argv', json.dumps(args).encode())
         self.run_check(['--stdout', expected], self.child('args', *args))
 
+    def test_streamed_stderr_binary_and_limits(self):
+        for size in [0, 1, 8191, 8192, 8193, 65536, 1048576]:
+            data = (bytes(range(256)) * 4096)[:size]
+            oracle = self.fixture('stderr binary', data)
+            self.assertEqual(self.run_check(['--stderr', oracle, '--output-limit', size], self.child('stderr', size)), b'')
+        oracle = self.fixture('three', bytes(range(3)))
+        for actual, offset in [(2, 2), (4, 3)]:
+            err = self.run_check(['--stderr', oracle], self.child('stderr', actual), 1)
+            self.assertIn(f'stderr mismatch at byte {offset}'.encode(), err)
+        oracle = self.fixture('secret stderr', b'PRIVATE_STDERR_FIXTURE')
+        err = self.run_check(['--stderr', oracle], self.child('stderr', 2), 1)
+        self.assertNotIn(b'PRIVATE_STDERR_FIXTURE', err)
+        for limit in [0, 8192, 65536]:
+            oracle = self.fixture('bounded stderr', (bytes(range(256)) * 4096)[:limit])
+            err = self.run_check(['--stderr', oracle, '--output-limit', limit], self.child('stderr', limit + 1), 125)
+            self.assertIn(b'OutputLimit', err)
+        payload = bytes(range(256)) * 256
+        stdin = self.fixture('stdin', payload)
+        stdout = self.fixture('stdout', payload + payload)
+        stderr = self.fixture('stderr', payload)
+        self.assertEqual(self.run_check(['--stdin', stdin, '--stdout', stdout, '--stderr', stderr,
+                                        '--output-limit', 131072], self.child('dual', 65536)), b'')
+        self.run_check(['--stdout', stderr, '--stderr', stderr, '--output-limit', 65536], self.child('dual', 65536))
+
+    def test_streamed_stderr_prelaunch_and_precedence(self):
+        marker = self.root / 'not-launched-stderr'
+        command = self.child('mark', marker)
+        empty = self.fixture('empty stderr', b'')
+        for options, code in [(['--stderr', 'relative'], 2), (['--stderr', empty, '--stderr', empty], 2),
+                              (['--stderr', self.root / 'missing'], 125), (['--stderr', self.root], 125)]:
+            self.run_check(options, command, code); self.assertFalse(marker.exists())
+        link = self.root / 'stderr-link'; link.symlink_to(empty)
+        self.run_check(['--stderr', link], command, 125); self.assertFalse(marker.exists())
+        big = self.fixture('oversized stderr', b'12345')
+        self.run_check(['--stderr', big, '--output-limit', 4], command, 125)
+        self.assertFalse(marker.exists())
+        for extension, content in [('toml', b'output_limit=0\n'), ('json', b'{"output_limit":0}')]:
+            config = self.fixture('stderr limits.' + extension, content)
+            expected = self.fixture('stderr four', bytes(range(4)))
+            for options in [['--config', config, '--output-limit', 4], ['--output-limit', 4, '--config', config]]:
+                self.run_check([*options, '--stderr', expected], self.child('stderr', 4))
+        err = self.run_check(['--stderr', big], self.child('exit', 7), 1)
+        self.assertIn(b'exit mismatch', err); self.assertNotIn(b'stderr mismatch', err)
+        err = self.run_check(['--stderr', big], self.child('output', 1), 1)
+        self.assertIn(b'stdout mismatch', err); self.assertNotIn(b'stderr mismatch', err)
+        self.run_check(['--stderr', empty, '--expect-exit', 7], self.child('exit', 7))
+
     def test_configured_defaults_precedence_and_fresh_reads(self):
         for extension, document in [('json', b'{"expect_exit":7,"output_limit":0,"timeout_ms":30000}'),
                                     ('toml', b'expect_exit=7\noutput_limit=0\ntimeout_ms=30000\n')]:
@@ -236,12 +283,14 @@ class Checker(unittest.TestCase):
                 if writer is not None:
                     os.close(writer)
 
-    def held(self, number=None, configured=False):
+    def held(self, number=None, configured=False, checked=False):
         marker = self.root/f'pid-{number}'
         options = ['--timeout-ms','2000' if number is None else '10000']
         if configured:
             path = self.fixture('deadline.toml', b'timeout_ms=2000\n')
             options = ['--config', path]
+        if checked:
+            options += ['--stderr', self.fixture('checked diagnostics', b'diagnostic-ready\n')]
         with owned([TOOL,*options,'--',*self.child('hold',marker)]) as p:
             parent_fd = os.pidfd_open(p.pid)
             child_fd = None
@@ -255,17 +304,20 @@ class Checker(unittest.TestCase):
                 child_fd = os.pidfd_open(child)
                 self.assertEqual(os.getsid(child),p.pid)
                 # Child stderr must already be readable while it remains alive.
-                with selectors.DefaultSelector() as s:
-                    s.register(p.stderr,selectors.EVENT_READ)
-                    self.assertTrue(s.select(3),'stderr was buffered until completion')
-                live = os.read(p.stderr.fileno(),len(b'diagnostic-ready\n'))
-                self.assertEqual(live,b'diagnostic-ready\n')
+                if not checked:
+                    with selectors.DefaultSelector() as s:
+                        s.register(p.stderr,selectors.EVENT_READ)
+                        self.assertTrue(s.select(3),'stderr was buffered until completion')
+                    live = os.read(p.stderr.fileno(),len(b'diagnostic-ready\n'))
+                    self.assertEqual(live,b'diagnostic-ready\n')
                 signal.pidfd_send_signal(child_fd,0)
                 if number is not None:
                     signal.pidfd_send_signal(parent_fd,number)
                 out,err=p.communicate(timeout=6)
                 self.assertEqual(out,b'')
                 self.assertEqual(p.returncode,125 if number is None else 128+number,err)
+                if checked:
+                    self.assertNotIn(b'diagnostic-ready', err)
                 with self.assertRaises(ProcessLookupError):
                     signal.pidfd_send_signal(child_fd,0)
             finally:
@@ -277,6 +329,11 @@ class Checker(unittest.TestCase):
         for number in [None,signal.SIGINT,signal.SIGTERM]:
             with self.subTest(signal=number):
                 self.held(number)
+
+    def test_checked_stderr_timeout_and_parent_cancellation(self):
+        for number in [None, signal.SIGINT, signal.SIGTERM]:
+            with self.subTest(signal=number):
+                self.held(number, checked=True)
 
     def test_real_compilers(self):
         source = str(ROOT / 'examples/echo.c')
