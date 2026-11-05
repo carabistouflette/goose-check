@@ -55,8 +55,8 @@ the contract. Earlier execution records are kept separately below.
 
 The implementation described by these docs is
 `713e2749ded459b915f59012aaa6e19351a17b18`. Its separate
-[feature workflow](https://github.com/carabistouflette/goose-check/actions/runs/41988650239)
-and [main workflow](https://github.com/carabistouflette/goose-check/actions/runs/41988708204)
+[feature push workflow](https://github.com/carabistouflette/goose-check/actions/runs/41988650239)
+and [PR workflow](https://github.com/carabistouflette/goose-check/actions/runs/41988708204)
 completed successfully with GCC and Clang. Documentation edits do not change
 application, native or bundled dependency sources.
 
