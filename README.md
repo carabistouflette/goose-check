@@ -4,6 +4,12 @@ A small command-regression checker written in Goose. Feed a binary stdin fixture
 compare exact stdout and exit status, and keep stderr live by default. Optionally
 check stderr incrementally against a fixture. Useful for compiler
 and CLI tests in Makefiles or CI. Apache-2.0; experimental, with no release tag.
+These docs describe implementation `713e2749ded459b915f59012aaa6e19351a17b18`;
+later documentation commits preserve that code and its bundled dependency pins.
+
+Requires 64-bit Linux/glibc 2.34+, kernel pidfds (5.3+), Linux headers providing
+openat2, Git, Make, CMake 3.27+, C/C++20 compilers and Python 3.11+. The pinned
+compiler revision is in GOOSE_REVISION. Other revisions are not promised.
 
 ```sh
 git clone https://github.com/carabistouflette/goose-check.git
@@ -21,7 +27,7 @@ inherited, so compiler diagnostics and progress remain live.
 With `--stderr ABSFILE`, diagnostics are instead checked as bounded chunks arrive;
 raw child stderr is suppressed in that explicit mode. See [streamed checking](docs/STREAMED_STDERR.md).
 
-## Compile and check a real program
+## Check a compiled program
 
 `make example` feeds [echo.c](examples/echo.c) to the host C compiler through
 finite stdin, then checks the resulting executable with a binary fixture:
@@ -79,10 +85,6 @@ recovery rather than abandoning a child.
 
 ## Build and validation
 
-Requires 64-bit Linux/glibc 2.34+, kernel pidfds (5.3+), Linux headers providing
-openat2, Git, Make, CMake 3.27+, C/C++20 compilers and Python 3.11+. The pinned
-compiler revision is in GOOSE_REVISION. Other revisions are not promised.
-
 ```sh
 make check test test-faults CC=gcc
 make test test-faults CC=clang
@@ -91,20 +93,10 @@ make sanitize SANITIZER_CC=clang
 make analyze
 ```
 
-Tests exercise actual release/debug CLI binaries, binary/exact-limit fixtures,
-no-launch errors, nonzero exits versus launch failures, live stderr, timeout and
-parent signal cleanup, C/Goose compiler invocations and selected ownership-transfer
-faults. Sanitizers instrument application, dependency sidecars and generated C.
-Goose's mmap-backed data stacks mean sanitizers alone are not a complete check
-of logical Goose array bounds; debug builds and independent expected bytes also
-matter. [Validation evidence](docs/VALIDATION.md) records scope and limitations.
-No universal performance or absence-of-bugs claim is made.
-
+See [validation records](docs/VALIDATION.md) for coverage and test-tool limits.
+[Performance scope](docs/PERFORMANCE.md) explains the absence of a current speed
+or memory claim. Use one Make invocation per checkout; generated outputs are shared.
 An existing matching compiler can be selected with `make GOOSE=/absolute/goose`.
-Use one Make invocation per checkout: Goose's generated outputs are shared.
-The generated CC wrapper path includes compiler bytes, instrumentation settings
-and fault-fixture source so normal/sanitized/test caches have distinct identities.
-Generated toolchains, build outputs and wrappers stay ignored.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md),
 [dependency notices](THIRD_PARTY.md) and [LICENSE](LICENSE).

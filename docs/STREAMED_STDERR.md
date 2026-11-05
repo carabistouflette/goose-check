@@ -11,8 +11,7 @@ printf 'diagnostic\n' > .build/expected.stderr
 
 The stderr fixture is a strict absolute bounded regular-file read, completed
 before the signal guard and command launch. Missing, invalid, symlink, directory
-or oversized fixtures cannot launch the command. Numeric defaults/config/CLI
-precedence are unchanged. Expected stdout still defaults to empty, and selected
+or oversized fixtures cannot launch the command. Numeric CLI options override configuration defaults. Expected stdout still defaults to empty, and selected
 stderr fixtures may contain NUL and invalid UTF-8 without conversion.
 
 The checker uses immutable public goose-process
@@ -38,14 +37,13 @@ diagnostics contain only offsets and lengths. Timeout, simultaneous stdout
 overflow or other process failure may discard unread diagnostics; their error
 classification takes precedence over a pending stderr mismatch.
 
-No log-forwarding write or additional signal handler is introduced. The existing
-20ms normal-context loop still latches/forwards cancellation by pidfd, consumes
+The 20ms normal-context loop latches/forwards cancellation by pidfd and consumes
 any returned bytes before handling errors, and performs explicit transferred-PID
 recovery while retaining the guard. Ordinary cleanup finishes before diagnostics
-or exit. Existing direct-child-only supervision, filesystem/kernel timing limits,
+or exit. Direct-child-only supervision, filesystem/kernel timing limits,
 best-effort terminal launch handoff and exceptional recovery limits still apply.
 
 Tests cover binary/chunk boundaries, exact/overflow caps, independent streams,
 copied input, mismatch offsets/privacy, precedence, strict no-launch fixture
 failures, both config formats/CLI orders, timeout/cancellation and ownership faults.
-The unchanged inherited-stderr tests continue proving default live behavior.
+Inherited-stderr tests check default live behavior.

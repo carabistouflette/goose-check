@@ -30,7 +30,7 @@ compile and check a real C program. The CLI suite also uses selected defaults
 with valid and invalid pinned-Goose compiler invocations.
 
 `output_limit` applies independently to captured stdout and opt-in checked stderr.
-`--stderr ABSFILE` is a CLI fixture option; the config schema has no new keys and
+`--stderr ABSFILE` is a CLI fixture option; the config schema accepts only the three numeric keys and
 cannot enable stderr checking. Stderr remains inherited live when it is absent.
 
 ## Values and precedence
@@ -72,7 +72,7 @@ Paths are trusted local inputs. File reads have no deadline or snapshot
 guarantee against concurrent writers; replace files atomically. The process
 budget starts after config/fixture preparation, not at checker startup.
 Diagnostics use fixed classifications without paths, file contents or parser
-details. The trusted command's stderr remains inherited. Existing cancellation,
+details. The trusted command's stderr remains inherited unless `--stderr` is selected. Existing cancellation,
 child ownership and argument/fixture contracts remain in [CONTRACT.md](CONTRACT.md).
 
 ## Dependency and checks
@@ -80,7 +80,7 @@ child ownership and argument/fixture contracts remain in [CONTRACT.md](CONTRACT.
 The bundled goose-config sources are exact Git objects at
 `f7bef7dcfeab2ca95c94d92d0fbb2320ab3dcb05`, with per-file hashes in
 `vendor/pins.json`, complete licensing and nested parser notices. The six runtime
-files are unmodified. Existing process/fs pins are unchanged; no library fetch
+files are unmodified. All bundled dependency revisions are in `vendor/pins.json`; no library fetch
 or sibling checkout is a build input. Only supported config APIs are used.
 
 The actual CLI suite covers both formats and option orders, long leading-zero
