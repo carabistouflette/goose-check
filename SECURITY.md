@@ -8,8 +8,9 @@ no production stability/security-support promise for this experimental project.
 The executable, arguments, environment/cwd and fixture paths are trusted local
 inputs. This tool is not an execution sandbox or environment sanitizer. It keeps
 stdin/stdout payloads bounded, avoids an implicit shell/PATH policy, and owns its
-direct child until cleanup or explicit local recovery. Stderr is inherited and
-may contain any data written by the chosen child. File operations have no total
+direct child until cleanup or explicit local recovery. Stderr is inherited by default and
+may contain any data written by the chosen child; `--stderr` selects checked,
+suppressed output instead. File operations have no total
 budget and special-path opens may have OS side effects before type rejection.
 
 Explicit `--config` files are read as bounded regular files with a 65,536-byte
