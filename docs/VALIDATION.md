@@ -145,3 +145,46 @@ spaces before passing it to the CLI tests. The Makefile now passes the quoted
 path unchanged to the test runner's existing `Path.resolve()` step, preserving
 both relative and absolute compiler overrides. This does not change checker
 execution or dependency sources.
+
+## Streamed stderr integration, 2026-11-05
+
+Starting from `32de6c4783bf8d3242e042993dadd160a98b2945`, the streamed-stderr
+feature deliberately vendors reviewed public goose-process
+`35b74eff63118abdd5b00603e1de4bf8ded110a2` from a clean credential-disabled
+anonymous HTTPS clone. Every bundled file matches its immutable upstream Git
+object and `vendor/pins.json`. This is a runtime/native dependency change;
+goose-fs/config pins, app native caller, guard/recovery, compiler wrapper,
+native fingerprint, numeric schema and pinned CI actions remain unchanged.
+The previous config-only statements above describe their historical checkpoint.
+
+The CLI now has 13 groups. New tests cover checked binary stderr across 8192-byte
+chunk boundaries through 1 MiB; cap+1 including zero/max; both outputs exactly at
+their independent caps; simultaneous finite input; mismatch offsets, prefix
+directions, privacy and precedence; strict marker-backed prelaunch errors; both
+config formats/CLI orders; and checked-mode timeout/SIGINT/SIGTERM with pidfd
+proof of child disappearance. Independent ordinary C and pinned-Goose compiler
+invocations supply exact diagnostic oracles for actual compiler workflows.
+
+Ownership fault execution now has five scenarios: prestart cancellation and real
+transferred-child recovery in inherited and checked modes, plus the existing
+broken-diagnostic-stderr cleanup regression. Transfer traces require two denied
+recovery waits, exclusive local termination/reaping, and guard preservation.
+
+Normal release/debug tests and all faults passed with GCC and Clang. Both full
+ASan/UBSan matrices also passed all 13 groups and five faults, including rebuilding
+the app/process native sidecars under each instrumented compiler identity. The
+existing real C example and Clang static analysis passed. Three independent
+security/lifecycle, contract and final acceptance/provenance reviewers found no
+actionable defect; review inspection is distinct from execution evidence.
+
+A fresh local clone of `82f2b019bcae18c3338019374c5081d2e3abd722`, with spaces
+in its checkout path and a fresh `GOOSE_HOME`, passed GCC and Clang release/debug,
+fault and example execution. It reused the matching pinned existing compiler;
+this is not a new compiler bootstrap or anonymous public-source execution claim.
+The clone remained clean after its runs.
+
+The [streamed-stderr contract](STREAMED_STDERR.md) specifies bounded chunks,
+caller-enforced independent caps, output suppression and comparison precedence.
+This consumer integration makes no throughput, allocation or RSS claim. It does
+not complete any unrelated upstream fuzz/stability gate or create a release tag.
+Hosted CI conclusions are reported separately by exact commit.
