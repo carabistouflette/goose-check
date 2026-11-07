@@ -47,8 +47,9 @@ Native static analysis targets application-owned caller policy.
 
 All inputs/results for correctness are checked in or deterministically generated
 by tests. See the Makefile for exact commands and GOOSE_REVISION/vendor/pins.json
-for source identities. No throughput benchmark has been recorded, and resource
-caps are payload bounds rather than exact RSS limits. File I/O, inherited stderr,
+for source identities. Historical strategy timings retain their own exact-source
+provenance; this release makes no new throughput claim. Resource caps are payload
+bounds rather than exact RSS limits. File I/O, inherited stderr,
 OS work, exceptional recovery and descendant-held captures retain the limits in
 the contract. Earlier execution records are kept separately below.
 
