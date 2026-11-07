@@ -1,0 +1,5 @@
+goose-diff
+Copyright 2026 goose-diff contributors
+
+Apache-2.0. No vendored runtime dependencies.
+The pinned Goose compiler and its standard library are separately licensed.

@@ -4,8 +4,7 @@ A small command-regression checker written in Goose. Feed a binary stdin fixture
 compare exact stdout and exit status, and keep stderr live by default. Optionally
 check stderr incrementally against a fixture. Useful for compiler
 and CLI tests in Makefiles or CI. Apache-2.0; experimental, with no release tag.
-These docs describe implementation `713e2749ded459b915f59012aaa6e19351a17b18`;
-later documentation commits preserve that code and its bundled dependency pins.
+Source and immutable dependency identities are recorded in Git and vendor/pins.json.
 
 Requires 64-bit Linux/glibc 2.34+, kernel pidfds (5.3+), Linux headers providing
 openat2, Git, Make, CMake 3.27+, C/C++20 compilers and Python 3.11+. The pinned
@@ -22,7 +21,8 @@ printf 'hello\n' > .build/hello
 
 Success is quiet and exits 0. A mismatch exits 1 and reports its first differing
 byte offset, lengths or exit/signal status on stderr. Fixture/argument contents
-are not echoed in checker diagnostics. The command's stderr is intentionally
+are not echoed in checker diagnostics by default. Optional `--diff` exposes
+escaped expected/actual stdout; see [limits and disclosure](docs/STDOUT_DIFF.md). The command's stderr is intentionally
 inherited, so compiler diagnostics and progress remain live.
 With `--stderr ABSFILE`, diagnostics are instead checked as bounded chunks arrive;
 raw child stderr is suppressed in that explicit mode. See [streamed checking](docs/STREAMED_STDERR.md).
@@ -52,6 +52,7 @@ goose-check [options] -- /absolute/program [arguments...]
 --expect-exit N       expected normal exit, 0..255 (default: 0)
 --timeout-ms N        finite process budget, 1..86400000 (default: 30000)
 --output-limit N      independent limit for each checked stream, 0..1048576 (default: 65536)
+--diff                opt-in capped escaped stdout diff on mismatch
 --config ABSFILE      explicit .json/.toml numeric defaults (maximum 64 KiB)
 ```
 

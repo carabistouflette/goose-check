@@ -3,6 +3,8 @@ import process from "./vendor/goose-process";
 import fs from "./vendor/goose-fs";
 import config from "./vendor/goose-config";
 import .settings;
+import diff from "./vendor/goose-diff";
+import .difference;
 import std;
 import os;
 
@@ -13,7 +15,7 @@ extern fn recover(pid: i64) = "gc_recover";
 extern fn diagnostic(message: const u8[:]) = "gc_diagnostic";
 
 fn usage() {
-    diagnostic("usage: goose-check [--config ABSFILE.json|ABSFILE.toml] [--stdin ABSFILE] [--stdout ABSFILE] [--stderr ABSFILE] [--expect-exit N] [--timeout-ms N] [--output-limit N] -- /absolute/program [args...]\n");
+    diagnostic("usage: goose-check [--config ABSFILE.json|ABSFILE.toml] [--stdin ABSFILE] [--stdout ABSFILE] [--stderr ABSFILE] [--expect-exit N] [--timeout-ms N] [--output-limit N] [--diff] -- /absolute/program [args...]\n");
 }
 fn fail(message: const u8[:], code: i32) {
     diagnostic(str("goose-check: ", message, "\n")); exit(code);
@@ -39,10 +41,15 @@ fn main() {
     var expected_exit: i64         = 0;
     var timeout:       i64         = 30000;
     var limit:         i64         = 65536;
-    var seen:          i64         = 0;
-    var position:      i64         = 1;
+    var show_diff = false;
+    var seen:     i64 = 0;
+    var position: i64 = 1;
     while position < argv.len && argv[position] != "--" {
         let option = argv[position];
+        if option == "--diff" {
+            if show_diff { usage(); exit(2); }
+            show_diff = true; position += 1; continue;
+        }
         let bit: i64 = if option == "--stdin" { 1 } else if option == "--stdout" { 2 }
             else if option == "--expect-exit" { 4 } else if option == "--timeout-ms" { 8 }
             else if option == "--output-limit" { 16 } else if option == "--config" { 32 }
@@ -177,7 +184,13 @@ fn main() {
         var offset: i64 = 0;
         while offset < min(actual.len, expected.len) && actual[offset] == expected[offset] { offset += 1; }
         diagnostic(str("goose-check: stdout mismatch at byte ", offset,
-            "; expected length ", expected.len, ", actual length ", actual.len, "\n")); exit(1);
+            "; expected length ", expected.len, ", actual length ", actual.len, "\n"));
+        if show_diff {
+            var detail: u8[>..] = [];
+            difference::render(expected, actual, detail);
+            diagnostic(detail);
+        }
+        exit(1);
     }
     if stderr_path.len > 0 && (stderr_offset >= 0 || stderr_count != expected_stderr.len) {
         let offset = if stderr_offset >= 0 { stderr_offset } else { stderr_count };

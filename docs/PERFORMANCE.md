@@ -1,26 +1,19 @@
 # Performance scope
 
-**Current benchmark: N/A.** goose-check makes no throughput, startup-latency,
-speedup or RSS claim. It checks trusted commands, whose execution and fixture I/O
-usually determine the workload. No performance comparison is needed to explain
-or validate this interface, so this documentation audit did not add a benchmark.
+No throughput, startup speedup or peak-memory guarantee is claimed. Trusted command
+execution, filesystem work and diagnostic I/O are part of the measured invocation.
+Payload/work limits are not measured allocation or resident-memory guarantees.
 
-Capture/input caps and chunk sizes are API payload/work bounds, not measured
-allocation or peak-memory limits. The [contract](CONTRACT.md) states them;
-[validation](VALIDATION.md) covers correctness. Neither proves performance or an
-absence of bugs.
+The [diff consumer harness](../bench/README.md) records real checker invocations
+with and without --diff, including matching controls and omission/truncation paths.
+It retains fixtures, raw wall-time/RSS samples and exact identities. Shared-host
+samples are descriptive and do not establish a general speed ranking.
 
-An older invocation-cost study lives in goose-process at
-[its historical report](https://github.com/carabistouflette/goose-process/blob/4cf1f13302ad5b42f3ca94f3c7a829c44b7ee60e/docs/CHECKER-CONSUMER.md#invocation-cost-experiment).
-It used checker `32de6c4783bf8d3242e042993dadd160a98b2945`, before this application's
-streamed-stderr change and process dependency update. It is not evidence for
-current checker `713e2749ded459b915f59012aaa6e19351a17b18`. Its source versions,
-raw samples, slower results and policy differences remain available there.
+Source and toolchain identities live in Git, GOOSE_REVISION and vendor/pins.json.
+The new portable goose-diff dependency is immutable; process/fs/config pins remain
+unchanged. See [diff contracts](STDOUT_DIFF.md) and THIRD_PARTY.md.
 
-Current source identities are in `GOOSE_REVISION` and `vendor/pins.json`:
-Goose `eadca409f68210893f366e60d0c2f0dc29a339be`,
-process `35b74eff63118abdd5b00603e1de4bf8ded110a2`,
-fs `910576e745e9ef4afc7807c4843ddc948836189a`,
-config `f7bef7dcfeab2ca95c94d92d0fbb2320ab3dcb05`.
-The docs audit preserves these objects and all dependency notices. It does not
-waive an upstream fuzz/release gate or create a stable release of this untagged tool.
+The older [invocation-cost study](https://github.com/carabistouflette/goose-process/blob/4cf1f13302ad5b42f3ca94f3c7a829c44b7ee60e/docs/CHECKER-CONSUMER.md#invocation-cost-experiment)
+used checker32de6c4 before streamed stderr and this integration. It is historical,
+not evidence for the current checker; all slower samples and qualifications stay
+with that report. Current evidence does not waive upstream release/fuzz gates.

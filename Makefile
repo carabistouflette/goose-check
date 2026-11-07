@@ -10,11 +10,11 @@ setup:
 	./scripts/setup-goose.sh
 format:
 	python3 scripts/native-manifest.py
-	"$(GOOSE)" format check.goose settings.goose
+	"$(GOOSE)" format check.goose settings.goose difference.goose
 check:
 	python3 scripts/check-vendor.py
 	python3 scripts/native-manifest.py --check
-	"$(GOOSE)" format --check check.goose settings.goose
+	"$(GOOSE)" format --check check.goose settings.goose difference.goose
 	"$(GOOSE)" check check.goose
 build: check
 	mkdir -p .build
