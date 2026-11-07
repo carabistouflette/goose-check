@@ -10,12 +10,13 @@ setup:
 	./scripts/setup-goose.sh
 format:
 	python3 scripts/native-manifest.py
-	"$(GOOSE)" format check.goose settings.goose
+	"$(GOOSE)" format check.goose settings.goose summary.goose
 check:
 	python3 scripts/check-vendor.py
 	python3 scripts/native-manifest.py --check
-	"$(GOOSE)" format --check check.goose settings.goose
+	"$(GOOSE)" format --check check.goose settings.goose summary.goose
 	"$(GOOSE)" check check.goose
+	python3 -m py_compile tests/summary.py
 build: check
 	mkdir -p .build
 	"$(GOOSE)" build check.goose --cc "$$(python3 scripts/compiler.py --cc "$(CC)" $(SANITIZER_OPTION))" -O2 -o .build/goose-check
@@ -25,6 +26,8 @@ debug: check
 test: build debug
 	$(RUN_ENV) python3 tests/run.py --tool .build/goose-check --goose "$(GOOSE)" --cc "$$(command -v "$(CC)")"
 	$(RUN_ENV) python3 tests/run.py --tool .build/goose-check-debug --goose "$(GOOSE)" --cc "$$(command -v "$(CC)")"
+	$(RUN_ENV) python3 tests/summary.py --tool .build/goose-check
+	$(RUN_ENV) python3 tests/summary.py --tool .build/goose-check-debug
 sanitize:
 	$(MAKE) test test-faults CC="$(SANITIZER_CC)" SANITIZE=1 GOOSE="$(GOOSE)"
 

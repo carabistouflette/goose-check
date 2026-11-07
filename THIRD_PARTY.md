@@ -26,3 +26,7 @@ and goose-json, with attribution in NOTICE.
 lives under ignored `.toolchain/` and is not distributed here. This project uses
 host Linux/glibc/pthreads; tests use Python, GCC and Clang. Those tools retain
 their respective licenses and are not bundled as binaries.
+
+- goose-terminal at `51e09f5010ece452ae42f184220b027ee67d777e` (Apache-2.0),
+  https://github.com/carabistouflette/goose-terminal; see vendor/goose-terminal/LICENSE
+  and NOTICE. Optional result summaries use the rendering core and POSIX adapter.

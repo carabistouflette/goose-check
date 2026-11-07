@@ -42,5 +42,18 @@
       "vendor/LICENSE": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
       "vendor/README.md": "5e85ecd3dbbc5c640edcf455a1ff852fe0dae592ff45cefa1c83781eb605d1c4"
     }
+  },
+  "goose-terminal": {
+    "repository": "https://github.com/carabistouflette/goose-terminal",
+    "revision": "51e09f5010ece452ae42f184220b027ee67d777e",
+    "sha256": {
+      "LICENSE": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+      "NOTICE": "06cdaf9723d7fcb547686eaae9dcb1a6d2f83bf4c605df8d81511ade64357796",
+      "terminal.goose": "8e4859bb6bd063496e25eaf3b3d8aea3cb5f272bfa9655cbcfb53eef2382fba3",
+      "posix.goose": "dff6ed018014cc2f5c8aa3118cfd347504b4bdbde123061465e645e673b5d2fe",
+      "posix.build": "3746698b273cb1ba960a178398c195e485f4c8342a4014848e1e325029bd644f",
+      "native/posix.c": "183e90a5a0f3ccea4260a8d87fc15d672451b97cbf50f7d2a5fe42d682290d44",
+      "native/README.md": "1e3871fe0a766c5ec4d1752cadf26e4d31828a42bd814163fb93febc01e92af5"
+    }
   }
 }

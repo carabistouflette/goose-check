@@ -4,8 +4,7 @@ A small command-regression checker written in Goose. Feed a binary stdin fixture
 compare exact stdout and exit status, and keep stderr live by default. Optionally
 check stderr incrementally against a fixture. Useful for compiler
 and CLI tests in Makefiles or CI. Apache-2.0; experimental, with no release tag.
-These docs describe implementation `713e2749ded459b915f59012aaa6e19351a17b18`;
-later documentation commits preserve that code and its bundled dependency pins.
+Pin the reviewed source commit and bundled dependencies for reproducible checks.
 
 Requires 64-bit Linux/glibc 2.34+, kernel pidfds (5.3+), Linux headers providing
 openat2, Git, Make, CMake 3.27+, C/C++20 compilers and Python 3.11+. The pinned
@@ -20,7 +19,7 @@ printf 'hello\n' > .build/hello
 .build/goose-check --stdin "$PWD/.build/hello" --stdout "$PWD/.build/hello" -- /bin/cat
 ```
 
-Success is quiet and exits 0. A mismatch exits 1 and reports its first differing
+By default success is quiet and exits 0. A mismatch exits 1 and reports its first differing
 byte offset, lengths or exit/signal status on stderr. Fixture/argument contents
 are not echoed in checker diagnostics. The command's stderr is intentionally
 inherited, so compiler diagnostics and progress remain live.
@@ -46,6 +45,7 @@ not fetch library dependencies. The compiler is downloaded by `make setup`.
 ```text
 goose-check [options] -- /absolute/program [arguments...]
 
+--summary POLICY     opt-in result summary: never (default), auto, always
 --stdin ABSFILE       finite stdin fixture (default: empty; maximum 1 MiB)
 --stdout ABSFILE      expected stdout (default: empty; bounded by output-limit)
 --stderr ABSFILE      opt-in expected stderr (default: inherited live)
@@ -100,3 +100,28 @@ An existing matching compiler can be selected with `make GOOSE=/absolute/goose`.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md),
 [dependency notices](THIRD_PARTY.md) and [LICENSE](LICENSE).
+
+## Optional result summaries
+
+`--summary auto` displays a complete result line on terminal stderr;
+`--summary always` also emits plain text when redirected. `never` is the default,
+so successful checks remain quiet and existing diagnostics/exit codes are
+preserved. Auto styling respects nonempty `NO_COLOR` and absent/empty/dumb `TERM`.
+
+The verdict describes the checker result: an expected nonzero child exit can
+still match. Summary lines contain fixed text only, never fixture bytes, paths,
+command arguments or credentials. Child stderr remains inherited or explicitly
+checked according to the existing options. A leading newline preserves a child's
+unterminated diagnostic; no cursor controls or animation erase child output.
+
+Summaries run only after direct-child cleanup and signal-guard restoration.
+Cancellation retains precedence and produces no completion summary. Ordinary
+summary-write failures preserve the checker verdict; a native signal-mask cleanup
+failure instead exits125 without another child launch. A failed partial styled
+write can leave formatting incomplete; no terminal rollback is promised.
+The finite child-supervision budget does not cover this optional presentation:
+blocking stderr can still block. Borrowed descriptor flags are never modified.
+
+This Linux-only consumer vendors an immutable goose-terminal core/POSIX snapshot;
+see vendor/pins.json and THIRD_PARTY.md. Terminal-library platform qualification
+does not make the checker's process and filesystem dependencies portable.

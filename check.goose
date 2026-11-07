@@ -2,7 +2,9 @@
 import process from "./vendor/goose-process";
 import fs from "./vendor/goose-fs";
 import config from "./vendor/goose-config";
+import posix from "./vendor/goose-terminal";
 import .settings;
+import .summary;
 import std;
 import os;
 
@@ -13,7 +15,7 @@ extern fn recover(pid: i64) = "gc_recover";
 extern fn diagnostic(message: const u8[:]) = "gc_diagnostic";
 
 fn usage() {
-    diagnostic("usage: goose-check [--config ABSFILE.json|ABSFILE.toml] [--stdin ABSFILE] [--stdout ABSFILE] [--stderr ABSFILE] [--expect-exit N] [--timeout-ms N] [--output-limit N] -- /absolute/program [args...]\n");
+    diagnostic("usage: goose-check [--summary never|auto|always] [--config ABSFILE.json|ABSFILE.toml] [--stdin ABSFILE] [--stdout ABSFILE] [--stderr ABSFILE] [--expect-exit N] [--timeout-ms N] [--output-limit N] -- /absolute/program [args...]\n");
 }
 fn fail(message: const u8[:], code: i32) {
     diagnostic(str("goose-check: ", message, "\n")); exit(code);
@@ -39,18 +41,22 @@ fn main() {
     var expected_exit: i64         = 0;
     var timeout:       i64         = 30000;
     var limit:         i64         = 65536;
-    var seen:          i64         = 0;
-    var position:      i64         = 1;
+    var summary_policy = summary::Mode.Never;
+    var seen:     i64 = 0;
+    var position: i64 = 1;
     while position < argv.len && argv[position] != "--" {
         let option = argv[position];
         let bit: i64 = if option == "--stdin" { 1 } else if option == "--stdout" { 2 }
             else if option == "--expect-exit" { 4 } else if option == "--timeout-ms" { 8 }
             else if option == "--output-limit" { 16 } else if option == "--config" { 32 }
-            else if option == "--stderr" { 64 } else { 0 };
+            else if option == "--stderr" { 64 } else if option == "--summary" { 128 } else { 0 };
         if bit == 0 || (seen & bit) != 0 || position + 1 >= argv.len { usage(); exit(2); }
         seen |= bit;
         let value = argv[position + 1];
-        if bit == 32 {
+        if bit == 128 {
+            if value != "never" && value != "auto" && value != "always" { fail("summary must be never, auto, or always", 2); }
+            summary_policy = summary::mode(value);
+        } else if bit == 32 {
             if !settings::valid_path(value) { fail("config requires a strict absolute .json or .toml path", 2); }
             config_path = value;
         } else if bit == 1 || bit == 2 || bit == 64 {
@@ -163,25 +169,28 @@ fn main() {
     if received > 0 { exit((128 + received) as! i32); }
     if received < 0 || guard_failed { fail("signal guard or forwarding failed", 125); }
     if status.error == process::Error.LaunchFailed {
-        fail("command launch failed", if status.os_error == 2 { 127 } else { 126 });
+        diagnostic("goose-check: command launch failed\n");
+        summary::complete(summary_policy, false);
+        exit(if status.os_error == 2 { 127 } else { 126 });
     }
     if status.error != process::Error.None {
-        diagnostic(str("goose-check: process error ", status.error, "; errno ", status.os_error, "\n")); exit(125);
+        diagnostic(str("goose-check: process error ", status.error, "; errno ", status.os_error, "\n")); summary::complete(summary_policy, false); exit(125);
     }
     if status.signal != 0 || status.exit_code != expected_exit {
         diagnostic(str("goose-check: exit mismatch; expected ", expected_exit,
-            ", actual ", status.exit_code, ", signal ", status.signal, "\n")); exit(1);
+            ", actual ", status.exit_code, ", signal ", status.signal, "\n")); summary::complete(summary_policy, false); exit(1);
     }
     let actual = process::stdout(child);
     if actual != expected {
         var offset: i64 = 0;
         while offset < min(actual.len, expected.len) && actual[offset] == expected[offset] { offset += 1; }
         diagnostic(str("goose-check: stdout mismatch at byte ", offset,
-            "; expected length ", expected.len, ", actual length ", actual.len, "\n")); exit(1);
+            "; expected length ", expected.len, ", actual length ", actual.len, "\n")); summary::complete(summary_policy, false); exit(1);
     }
     if stderr_path.len > 0 && (stderr_offset >= 0 || stderr_count != expected_stderr.len) {
         let offset = if stderr_offset >= 0 { stderr_offset } else { stderr_count };
         diagnostic(str("goose-check: stderr mismatch at byte ", offset,
-            "; expected length ", expected_stderr.len, ", actual length ", stderr_count, "\n")); exit(1);
+            "; expected length ", expected_stderr.len, ", actual length ", stderr_count, "\n")); summary::complete(summary_policy, false); exit(1);
     }
+    summary::complete(summary_policy, true);
 }
