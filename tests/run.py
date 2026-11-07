@@ -80,6 +80,108 @@ class Checker(unittest.TestCase):
         self.assertIn(b'byte 0', err)
         self.assertNotIn(b'private-fixture-value', err)
 
+    def diff_check(self, expected, actual, extra=(), enabled=True):
+        expected_path = self.fixture('diff expected', expected)
+        actual_path = self.fixture('diff actual', actual)
+        options = ['--stdout', expected_path, '--stdin', actual_path, *extra]
+        if enabled:
+            options.append('--diff')
+        return self.run_check(options, self.child('echo'), 0 if expected == actual else 1)
+
+    def test_diff_opt_in_and_golden(self):
+        expected = b'same\nold\nlast\n'
+        actual = b'same\nnew\nlast\n'
+        metadata = b'goose-check: stdout mismatch at byte 5; expected length 14, actual length 14\n'
+        self.assertEqual(self.diff_check(expected, actual, enabled=False), metadata)
+        self.assertEqual(self.diff_check(expected, actual), metadata +
+                         b'goose-check: escaped stdout diff (expected -> actual)\n'
+                         b'--- a/input\n+++ b/input\n@@ -1,3 +1,3 @@\n same\n-old\n+new\n last\n')
+        self.assertEqual(self.diff_check(expected, expected), b'')
+        # Supplying the flag first exercises its single-token parser path.
+        source = self.fixture('diff first actual', b'actual\n')
+        oracle = self.fixture('diff first expected', b'expected\n')
+        err = self.run_check(['--diff', '--stdin', source, '--stdout', oracle], self.child('echo'), 1)
+        self.assertIn(b'-expected\n+actual\n', err)
+
+    def test_diff_escapes_binary_and_literal_sequences(self):
+        expected = b'\x1b[31m\x00\xff\\x41\r\t\n'
+        actual = b'new\n'
+        err = self.diff_check(expected, actual)
+        self.assertEqual(err, b'goose-check: stdout mismatch at byte 0; expected length 14, actual length 4\n'
+                         b'goose-check: escaped stdout diff (expected -> actual)\n'
+                         b'--- a/input\n+++ b/input\n@@ -1,1 +1,1 @@\n'
+                         b'-\\x1B[31m\\x00\\xFF\\x5Cx41\\x0D\\x09\n+new\n')
+        for unsafe in (b'\x1b', b'\x00', b'\xff', b'\r', b'\t'):
+            self.assertNotIn(unsafe, err)
+        self.assertNotIn(b'\\x41', err)
+        # Default diagnostics still disclose none of the binary payload.
+        default = self.diff_check(expected, actual, enabled=False)
+        self.assertEqual(default, err.split(b'goose-check: escaped stdout diff', 1)[0])
+
+    def test_diff_escape_truncation_is_bounded_and_token_complete(self):
+        err = self.diff_check(b'\x00' * 3000 + b'\n', b'\xff' * 3000 + b'\n')
+        _, block = err.split(b'\n', 1)
+        self.assertLessEqual(len(block), 16384)
+        self.assertTrue(block.endswith(b'\n[diff truncated]\n'))
+        self.assertIn(b'\\x00', block)
+        self.assertIn(b'\\xFF', block)
+        self.assertNotIn(b'\x00', block)
+        self.assertNotIn(b'\xff', block)
+        # Every generated backslash must begin a complete, uppercase byte escape.
+        body = block[:-len(b'\n[diff truncated]\n')]
+        at = 0
+        while at < len(body):
+            if body[at] == 92:
+                token = body[at:at + 4]
+                self.assertEqual(len(token), 4)
+                self.assertEqual(token[:2], b'\\x')
+                self.assertTrue(all(c in b'0123456789ABCDEF' for c in token[2:]))
+                at += 4
+            else:
+                at += 1
+
+    def test_diff_resource_limits_keep_mismatch_status(self):
+        # Isolate each bound with fixtures within the earlier bounds.
+        cases = [
+            ('input bytes', b'a' * 65537, b'b\n', ['--output-limit', '1048576']),
+            ('line count', b'a\n' * 4097, b'b\n', []),
+            ('matrix cells', b'a\n' * 512, b'b\n' * 512, []),
+            ('comparison work', (b'a' * 2997 + b'x\n') * 20,
+             (b'a' * 2997 + b'y\n') * 20, []),
+            ('raw patch bytes', b'a' * 9000 + b'\n', b'b' * 9000 + b'\n', []),
+        ]
+        for name, expected, actual, options in cases:
+            with self.subTest(limit=name):
+                err = self.diff_check(expected, actual, options)
+                metadata = self.diff_check(expected, actual, options, enabled=False)
+                self.assertEqual(err, metadata + b'goose-check: stdout diff omitted (resource limit)\n')
+                self.assertNotIn(b'--- a/input', err)
+
+    def test_diff_prelaunch_rejections(self):
+        marker = self.root / 'diff-not-launched'
+        for options in (['--diff', '--diff'], ['--diff=yes'], ['--diff', 'yes']):
+            with self.subTest(options=options):
+                self.run_check(options, self.child('mark', marker), 2)
+                self.assertFalse(marker.exists())
+
+    def test_diff_preserves_error_precedence_and_stderr_policy(self):
+        oracle = self.fixture('private expected', b'PRIVATE_STDOUT\n')
+        err = self.run_check(['--diff', '--stdout', oracle], self.child('exit', 7), 1)
+        self.assertIn(b'exit mismatch', err)
+        self.assertNotIn(b'diff', err)
+        self.assertNotIn(b'PRIVATE_STDOUT', err)
+        err = self.run_check(['--diff', '--stdout', oracle, '--output-limit', 32], self.child('output', 33), 125)
+        self.assertIn(b'process error', err)
+        self.assertNotIn(b'diff', err)
+        self.assertNotIn(b'PRIVATE_STDOUT', err)
+        stderr = self.fixture('private stderr', b'PRIVATE_STDERR\n')
+        err = self.run_check(['--diff', '--stderr', stderr], self.child('stderr', 2), 1)
+        self.assertIn(b'stderr mismatch', err)
+        self.assertNotIn(b'diff', err)
+        self.assertNotIn(b'PRIVATE_STDERR', err)
+        # The flag neither suppresses nor escapes intentionally inherited stderr.
+        self.assertEqual(self.run_check(['--diff'], self.child('stderr', 2)), bytes(range(2)))
+
     def test_prelaunch_rejections(self):
         marker = self.root/'never-launched'
         command = self.child('mark', marker)

@@ -27,3 +27,8 @@ external reapers, concurrent changes to signal dispositions and thread
 cancellation are outside the normal ownership guarantee. Permission denial may
 prevent cleanup indefinitely; the recovery owner retains scope and diagnoses it
 instead of silently abandoning a child. See docs/CONTRACT.md.
+
+Explicit `--diff` discloses expected/actual stdout, including equal context, as
+escaped diagnostics capped at 16 KiB. Escaping controls terminal bytes, not data
+confidentiality. Resource exhaustion omits the diff and preserves mismatch status.
+See [stdout diff boundaries](docs/STDOUT_DIFF.md).
