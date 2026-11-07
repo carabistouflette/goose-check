@@ -16,3 +16,10 @@ Covers matching output, a small edit, escaped truncation and three resource-limi
 omission paths. Both modes use one binary and the same fixtures. Shared-host
 samples justify no speedup, absence-of-overhead, cross-machine ranking or peak-
 memory guarantee. Retain slower samples and identities. No CI speed threshold.
+
+Context qualification adds a compiler transcript captured by the pinned Goose
+compiler (exact source fixtures from goose-diff context evidence), generated text
+with a small middle edit, and scattered changes. Current --diff uses three
+context lines. Previous alpha.1 samples remain historical, not a timing control
+for the changed workload set. New runs compare default and opt-in invocations
+of the same new binary; no old/new executable speed claim is made.

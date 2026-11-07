@@ -35,7 +35,16 @@ provenance = {
     'scope': 'Shared-host smoke; no speedup, peak-memory bound or cross-machine claim.',
 }
 (args.out / 'provenance.json').write_text(json.dumps(provenance, indent=2) + '\n')
+generated = b''.join(f'  field_{i:04d} = "unchanged value"\n'.encode() for i in range(1200))
+scattered = b''.join(f'key_{i:04d}=value\n'.encode() for i in range(360))
+changed_scattered = scattered
+for i in (40, 160, 300):
+    changed_scattered = changed_scattered.replace(f'key_{i:04d}=value'.encode(), f'key_{i:04d}=other'.encode())
 workloads = [
+    ('compiler_transcript', (root / 'bench/fixtures/compiler-transcript/expected.bin').read_bytes(),
+     (root / 'bench/fixtures/compiler-transcript/actual.bin').read_bytes()),
+    ('generated_middle', generated, generated.replace(b'field_0600 = "unchanged value"', b'field_0600 = "updated value"')),
+    ('scattered_changes', scattered, changed_scattered),
     ('match', b'same\n' * 1000, b'same\n' * 1000),
     ('small_change', b'first\nold\nlast\n', b'first\nnew\nlast\n'),
     ('escaped_truncation', b'\0' * 6000, b'\1' * 6000),
