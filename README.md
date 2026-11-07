@@ -3,15 +3,16 @@
 A small command-regression checker written in Goose. Feed a binary stdin fixture,
 compare exact stdout and exit status, and keep stderr live by default. Optionally
 check stderr incrementally against a fixture. Useful for compiler
-and CLI tests in Makefiles or CI. Apache-2.0; experimental, with no release tag.
+and CLI tests in Makefiles or CI. Apache-2.0. v0.1.0 is the first tagged source release.
 Source and immutable dependency identities are recorded in Git and vendor/pins.json.
+The supported CLI follows the [v0.1.x policy](docs/RELEASE.md); it remains pre-1.0.
 
 Requires 64-bit Linux/glibc 2.34+, kernel pidfds (5.3+), Linux headers providing
 openat2, Git, Make, CMake 3.27+, C/C++20 compilers, GNU patch and Python 3.11+. The pinned
 compiler revision is in GOOSE_REVISION. Other revisions are not promised.
 
 ```sh
-git clone https://github.com/carabistouflette/goose-check.git
+git clone --branch v0.1.0 https://github.com/carabistouflette/goose-check.git
 cd goose-check
 make setup
 make build
@@ -27,6 +28,12 @@ The command's stderr is intentionally inherited, so compiler diagnostics and
 progress remain live.
 With `--stderr ABSFILE`, diagnostics are instead checked as bounded chunks arrive;
 raw child stderr is suppressed in that explicit mode. See [streamed checking](docs/STREAMED_STDERR.md).
+
+The executable is `.build/goose-check`. Invoke its absolute path from another
+directory or copy it into a directory on your PATH. Build on the target system;
+this source release makes no portable prebuilt-binary promise. A standalone
+`--help` writes usage to stderr and exits 0. There is no `--version` option; use
+`git describe --tags --always` in the checkout to identify its source.
 
 ## Check a compiled program
 

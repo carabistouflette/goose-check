@@ -47,15 +47,16 @@ Native static analysis targets application-owned caller policy.
 
 All inputs/results for correctness are checked in or deterministically generated
 by tests. See the Makefile for exact commands and GOOSE_REVISION/vendor/pins.json
-for source identities. No throughput benchmark has been recorded, and resource
-caps are payload bounds rather than exact RSS limits. File I/O, inherited stderr,
+for source identities. Historical strategy timings retain their own exact-source
+provenance; this release makes no new throughput claim. Resource caps are payload
+bounds rather than exact RSS limits. File I/O, inherited stderr,
 OS work, exceptional recovery and descendant-held captures retain the limits in
 the contract. Earlier execution records are kept separately below.
 
 
-## Published implementation
+## Historical published implementation
 
-The implementation described by these docs is
+This earlier validation snapshot records
 `713e2749ded459b915f59012aaa6e19351a17b18`. Its separate
 [feature push workflow](https://github.com/carabistouflette/goose-check/actions/runs/41988650239)
 and [PR workflow](https://github.com/carabistouflette/goose-check/actions/runs/41988708204)
@@ -65,3 +66,8 @@ application, native or bundled dependency sources.
 [Historical checks](VALIDATION-HISTORY.md) retain the earlier compiler/configuration/
 streaming records and exact revisions. See [performance scope](PERFORMANCE.md)
 for the distinction between functional checks and measurements.
+
+Current release gates include the full matrix, both compiler examples and a
+clean-checkout setup/build/README smoke. Exact source/compiler identities, CI and
+post-tag checks are recorded in the release PR and catalog receipt. See
+[publication policy](RELEASE.md). Historical evidence retains its original source.
