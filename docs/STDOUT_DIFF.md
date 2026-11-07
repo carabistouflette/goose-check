@@ -10,7 +10,12 @@ The default retains up to three unchanged context lines around each change.
 option order is accepted, duplicates/invalid values fail before fixture loading
 or launch. There is no config key for context. Touching/overlapping hunk windows
 merge; separated changes produce separate headers. Zero omits all equal context.
-Comparison input/line/work/matrix limits are unchanged.
+`--diff-algorithm lcs|sparse` explicitly selects the strategy and requires --diff.
+Default lcs retains prior limits and exact edit ordering. Explicit lcs is equivalent
+to omission. Values are exact lowercase; missing/invalid/duplicate selection fails
+before fixture reads or launch. There is no algorithm config key or environment
+selection. Sparse never automatically falls back to LCS (nor the reverse).
+Input, line, compared-byte and output caps remain unchanged.
 
 This explicitly discloses expected and actual changed stdout plus selected context.
 Treat logs accordingly. Diffing is byte-based: LF terminates lines; final-newline
@@ -23,11 +28,14 @@ The additional block is capped at 16,384 bytes including its header and any
 truncation marker, excluding the existing mismatch metadata line. Tokens are
 complete; truncation is explicit. All raw context hunks together are separately
 capped at 16,384 bytes. Library budgets: 65,536 bytes and 4,096 lines per input,
-262,144 matrix cells including sentinels, and 1,048,576 compared byte pairs.
+1,048,576 compared byte pairs, and either 262,144 LCS matrix cells (including
+sentinels) or a separately named 262,144-slot sparse trace bound. Sparse admits
+whole retained frontier rows including unreachable/unvisited positions, so state
+exhaustion still bounds work when length mismatches compare no bytes.
 Matrix work and input scanning have separate bounds; byte comparisons are not an
 instruction or wall-clock budget. Oversized inputs, work, matrix or raw output
 produce one fixed omission note. Normal byte comparison checks the entire capture,
-up to the existing process cap. Logical scratch matrix storage is at most 2 MiB;
+up to the existing process cap. Logical LCS matrix or sparse trace storage is at most 2 MiB;
 allocator overhead, capacity and runtime OOM are outside these limits. Context planning additionally uses bounded
 per-line rows and hunk descriptors (at most 327,704 logical bytes at the consumer
 line limits); allocator capacity is separate.
@@ -41,3 +49,12 @@ the child-process deadline does not cover filesystem or diagnostic I/O.
 The portable goose-diff sources and notices are pinned by complete upstream
 revision and SHA-256 hashes in vendor/pins.json. No build-time dependency fetch
 is required. See THIRD_PARTY.md and the vendored LICENSE/NOTICE.
+
+Sparse minimizes the same inserted/deleted line cost but its deterministic
+frontier tie rule can select different valid hunks, including insertion before
+deletion in a replacement. Dense rewrites can be slower or hit sparse states
+where LCS succeeds. For example, 400 entirely changed short lines fit the LCS
+matrix but exceed the sparse trace cap. This yields the same fixed omission note
+and mismatch exit 1; selection does not grant fallback or unlimited search.
+Choose lcs when its exact diagnostic ordering is required. Earlier experimental
+speed results are not a guarantee for complete command invocations.

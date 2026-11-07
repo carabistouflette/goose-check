@@ -23,3 +23,18 @@ with a small middle edit, and scattered changes. Current --diff uses three
 context lines. Previous alpha.1 samples remain historical, not a timing control
 for the changed workload set. New runs compare default and opt-in invocations
 of the same new binary; no old/new executable speed claim is made.
+
+## Explicit strategy consumer
+
+```sh
+make build CC=gcc SANITIZE=0
+python3 bench/strategies.py --tool .build/goose-check --out .build/strategy-samples
+```
+
+Nine frozen inputs cover distant generated/diagnostic/repeated edits, equal and
+single changes, dense limits and a 400-line no-fallback guard. Default, explicit
+lcs and explicit sparse rotate order on one unsanitized binary. Default/explicit
+LCS diagnostics must match exactly in every round. Omission states are recorded;
+never use rejected LCS work as a successful-throughput denominator. Earlier
+microbenchmarks remain historical, not an end-to-end command speed guarantee.
+All raw samples and fixture hashes are retained with provenance; no CI threshold.
