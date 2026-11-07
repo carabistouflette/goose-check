@@ -1,0 +1,11 @@
+{
+  "qualification": "Initial run source status records concurrent README/test/doc edits; production files verified byte-identical to committed candidate. These are retained, not discarded. A clean candidate run follows separately.",
+  "verified_files": {
+    "check.goose": "901ea4d2a9480602e1a52821088ed28869d248dc0ff4f2f15830de993bda4877",
+    "difference.goose": "a7086f69fb2d6eb1427da9eb041bc8e7f63ca58624079f3e9db60c95a7c3cb73",
+    "settings.goose": "33c93fc8a74c1dcab7c49c37bc10a5915e779a946b2a69f0b509ab885887ec45",
+    "check.build": "8e5883606dd0a2470c91f34d3cd78ad920a5d6a522b5da6742ef3ab520e1059b",
+    "native/caller.c": "19953287bad1428734d2e8db552d1008ad0ea2ad5807a53179afdaa615ddf746",
+    "vendor/pins.json": "c44095c2c047e993d6c376003246e791ecf631c1b53d82eaeab92f261f0fbd2b"
+  }
+}
