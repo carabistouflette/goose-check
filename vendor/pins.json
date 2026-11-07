@@ -45,7 +45,7 @@
   },
   "goose-diff": {
     "repository": "https://github.com/carabistouflette/goose-diff",
-    "revision": "e6b10bb3fbe71b952cce9aa2f15cf8fe51feadbd",
+    "revision": "129dc794b62ad987784db0a1d52ef618c85fccf4",
     "sha256": {
       "diff.goose": "b20195b15dd36c98d605ecfd76891e000acadcb5a1314bfa82cc8012c0bab8b3",
       "sparse.goose": "d666dbf402e11e993bc83febbc46b962d47cb0d486d6ba3f90fb267ca70991fc",
