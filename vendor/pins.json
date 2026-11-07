@@ -42,5 +42,13 @@
       "vendor/LICENSE": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
       "vendor/README.md": "5e85ecd3dbbc5c640edcf455a1ff852fe0dae592ff45cefa1c83781eb605d1c4"
     }
+  },
+  "goose-argparse": {
+    "repository": "https://github.com/carabistouflette/goose-argparse",
+    "revision": "b1f7cfeeacedbfb934d64ab89036129303f73116",
+    "sha256": {
+      "argparse.goose": "0d347cf8b2631f4064d42df85658010dc0dd13b226fc30ea3b425316d4d836b9",
+      "LICENSE": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+    }
   }
 }

@@ -97,11 +97,27 @@ class Checker(unittest.TestCase):
         self.run_check(['--stdin', link], command, 125)
         self.run_check(['--stdin', self.root], command, 125)
         self.assertFalse(marker.exists())
+
         with owned([TOOL, *command]) as p:
             _, err = p.communicate(timeout=10)
             self.assertEqual(p.returncode, 2, err)
         self.assertFalse(marker.exists())
         self.run_check([], ['relative-program'], 2)
+
+    def test_library_option_parsing_and_child_boundary(self):
+        arguments = ['--stdout=child-value', '--unknown', '--', '', 'two words']
+        expected = self.fixture('arguments', json.dumps(arguments).encode())
+        self.run_check([f'--stdout={expected}', '--timeout-ms=30000'], self.child('args', *arguments))
+        self.run_check(['--expect-exit=7'], self.child('exit', 7))
+        marker = self.root/'parser-never-launched'
+        for options in [
+            ['--expect-exit=0', '--expect-exit', '0'],
+            ['--timeout-ms='], ['--stdin='], ['--unknown=0'],
+            ['unexpected-positional'], ['--stdout'], ['-h'],
+        ]:
+            with self.subTest(options=options):
+                self.run_check(options, self.child('mark', marker), 2)
+                self.assertFalse(marker.exists())
 
     def test_exit_and_argument_boundaries(self):
         for code in [0, 1, 126, 127, 255]:
