@@ -22,8 +22,9 @@ printf 'hello\n' > .build/hello
 Success is quiet and exits 0. A mismatch exits 1 and reports its first differing
 byte offset, lengths or exit/signal status on stderr. Fixture/argument contents
 are not echoed in checker diagnostics by default. Optional `--diff` exposes
-escaped expected/actual stdout; see [limits and disclosure](docs/STDOUT_DIFF.md). The command's stderr is intentionally
-inherited, so compiler diagnostics and progress remain live.
+escaped expected/actual stdout; see [limits and disclosure](docs/STDOUT_DIFF.md).
+The command's stderr is intentionally inherited, so compiler diagnostics and
+progress remain live.
 With `--stderr ABSFILE`, diagnostics are instead checked as bounded chunks arrive;
 raw child stderr is suppressed in that explicit mode. See [streamed checking](docs/STREAMED_STDERR.md).
 

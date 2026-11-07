@@ -12,14 +12,13 @@ Options, each accepted at most once:
 - `--stdin ABSOLUTE_FILE`: default empty input; at most 1 MiB.
 - `--stdout ABSOLUTE_FILE`: default empty expected output; at most output-limit.
 - `--stderr ABSOLUTE_FILE`: optional expected stderr; at most output-limit.
-- `--diff`: opt in to an escaped, bounded unified diff for stdout mismatches.
+- `--diff`: opt into escaped stdout differences, default 3 context lines, capped
+  at 16 KiB of added diagnostics.
+- `--diff-context INTEGER`: context 0..4096, requires `--diff`; duplicate/invalid
+  values fail before fixture reads or launch.
 - `--expect-exit INTEGER`: default 0, range 0..255.
 - `--timeout-ms INTEGER`: default 30000, range 1..86400000.
 - `--output-limit INTEGER`: default 65536, range 0..1048576.
-- `--diff`: opt-in escaped stdout differences, default 3 context lines; at most
-  16 KiB of additional diagnostics.
-- `--diff-context INTEGER`: context 0..4096, requires `--diff`; duplicate/invalid
-  values fail before fixture reads or launch.
 - `--config ABSOLUTE_FILE`: opt-in `.json`/`.toml` numeric defaults, at most
   65,536 bytes. Supplied numeric flags override these defaults regardless
   of option order; see [configuration](CONFIGURATION.md).
@@ -41,8 +40,8 @@ Child exits 126/127 are ordinary outcomes that can match --expect-exit.
 A latched parent SIGINT/SIGTERM wins as 128+signal after child cleanup. Default
 diagnostics contain mismatch offsets/lengths and error classifications, never
 raw fixture, argument or environment contents. Explicit `--diff` opts into
-disclosing expected and actual stdout in escaped form, including unchanged
-context; it applies only to stdout mismatches. Its independent work and size
+disclosing expected and actual stdout in escaped form, including selected unchanged
+context (see [context limits](STDOUT_DIFF.md)); it applies only to stdout mismatches. Its independent work and size
 limits can omit the diff without changing the mismatch result. Child stderr is
 inherited by default. With `--stderr`, it is checked incrementally and raw
 contents are not echoed. See the
