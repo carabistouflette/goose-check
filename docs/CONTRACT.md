@@ -12,9 +12,11 @@ Options, each accepted at most once:
 - `--stdin ABSOLUTE_FILE`: default empty input; at most 1 MiB.
 - `--stdout ABSOLUTE_FILE`: default empty expected output; at most output-limit.
 - `--stderr ABSOLUTE_FILE`: optional expected stderr; at most output-limit.
+- `--diff`: opt in to an escaped, bounded unified diff for stdout mismatches.
 - `--expect-exit INTEGER`: default 0, range 0..255.
 - `--timeout-ms INTEGER`: default 30000, range 1..86400000.
 - `--output-limit INTEGER`: default 65536, range 0..1048576.
+- `--diff`: opt-in escaped stdout differences; at most 16 KiB of additional diagnostics.
 - `--config ABSOLUTE_FILE`: opt-in `.json`/`.toml` numeric defaults, at most
   65,536 bytes. Supplied numeric flags override these defaults regardless
   of option order; see [configuration](CONFIGURATION.md).
@@ -33,10 +35,14 @@ before its file type is rejected. Treat fixture paths as trusted local inputs.
 Exit codes: 0 match; 1 stdout/stderr/exit/signal mismatch; 2 usage; 125 fixture/process/
 checker failure; 126 failed executable launch; 127 missing executable/cwd.
 Child exits 126/127 are ordinary outcomes that can match --expect-exit.
-A latched parent SIGINT/SIGTERM wins as 128+signal after child cleanup. Diagnostics
-contain mismatch offsets/lengths and error classifications, never raw fixture,
-argument or environment contents. Child stderr is inherited by default. With
-`--stderr`, it is checked incrementally and raw contents are not echoed. See the
+A latched parent SIGINT/SIGTERM wins as 128+signal after child cleanup. Default
+diagnostics contain mismatch offsets/lengths and error classifications, never
+raw fixture, argument or environment contents. Explicit `--diff` opts into
+disclosing expected and actual stdout in escaped form, including unchanged
+context; it applies only to stdout mismatches. Its independent work and size
+limits can omit the diff without changing the mismatch result. Child stderr is
+inherited by default. With `--stderr`, it is checked incrementally and raw
+contents are not echoed. See the
 [streaming contract](STREAMED_STDERR.md) for independent limits and precedence.
 Checker diagnostics are best effort: a broken stderr pipe cannot abort owned
 cleanup. The standalone application temporarily ignores SIGPIPE around its own
