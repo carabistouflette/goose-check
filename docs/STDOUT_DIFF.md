@@ -49,6 +49,10 @@ the child-process deadline does not cover filesystem or diagnostic I/O.
 The portable goose-diff sources and notices are pinned by complete upstream
 revision and SHA-256 hashes in vendor/pins.json. No build-time dependency fetch
 is required. See THIRD_PARTY.md and the vendored LICENSE/NOTICE.
+The dependency is [goose-diff v0.1.0](https://github.com/carabistouflette/goose-diff/releases/tag/v0.1.0),
+with its documented supported v0.1.x compatibility policy. Its vendored
+implementation, license and notice bytes are identical to the prior alpha.3 pin;
+this dependency update preserves the existing CLI behavior and resource limits.
 
 Sparse minimizes the same inserted/deleted line cost but its deterministic
 frontier tie rule can select different valid hunks, including insertion before
