@@ -1,5 +1,9 @@
 # Command checker contract
 
+This document and its linked configuration, stderr and diff contracts define the
+supported v0.1.x CLI. See [release policy](RELEASE.md). A sole `--help` argument
+writes usage to stderr and exits 0.
+
 `goose-check [options] -- /absolute/program [arguments...]` checks one trusted
 command. It feeds a finite binary stdin fixture, compares bounded captured
 stdout byte-for-byte with an expected fixture and checks a normal exit status.
@@ -28,7 +32,10 @@ Options, each accepted at most once:
 A literal `--` is required before the executable; subsequent argument bytes and
 empty arguments retain their boundaries. Numeric options accept decimal digits
 only. Duplicate/unknown options, missing values, invalid bounds and nonabsolute
-executables fail before launch. Normal library argv bounds also apply.
+executables fail before launch. Command argv accepts at most 4,096 arguments
+including the executable, 131,071 bytes per argument, a 4,095-byte executable
+path and 1 MiB aggregate including one terminating NUL per argument. OS
+argument/environment limits can still reject launch.
 
 Fixture loading finishes before launch. goose-fs requires strict absolute paths:
 no repeated/trailing separators, dot/dot-dot components or symlink traversal.

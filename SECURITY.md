@@ -3,7 +3,8 @@
 Report suspected vulnerabilities privately through
 [GitHub private vulnerability reporting](https://github.com/carabistouflette/goose-check/security/advisories/new).
 Do not include credentials or confidential fixtures in public issues. There is
-no production stability/security-support promise for this experimental project.
+no support SLA. The pre-1.0 CLI follows the [v0.1.x policy](docs/RELEASE.md);
+report issues against the latest v0.1.x patch release.
 
 The executable, arguments, environment/cwd and fixture paths are trusted local
 inputs. This tool is not an execution sandbox or environment sanitizer. It keeps

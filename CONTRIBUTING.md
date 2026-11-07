@@ -28,4 +28,5 @@ private coordination notes or unrelated workspace files.
 
 Meaningful behavior/ownership changes require independent security and contract
 review. Profiles must keep raw inputs/results and precise provenance; avoid
-unverified speed claims. Experimental interfaces can change before a release.
+unverified speed claims. Preserve the supported [v0.1.x contract](docs/RELEASE.md) in patch releases;
+review compatibility explicitly before changing user-visible behavior.
