@@ -1,0 +1,69 @@
+{
+  "source": "aa9998a068a75efd1b06eedc26f5cc8c4171d6c9",
+  "status": "",
+  "binary_sha256": "c863be361ff5f82d9907186bc091d4433a9a8737e9b4873541f16c6462854ce9",
+  "tool": "/home/arobin/Work/Projects/goose-libs/.build/goose-check-diff-publication/.build/goose-check",
+  "platform": "Linux-7.2.11-arch1-1-x86_64-with-glibc2.44",
+  "cpu": "Intel(R) Core(TM) Ultra 7 258V",
+  "compiler_revision": "eadca409f68210893f366e60d0c2f0dc29a339be",
+  "build": "make build CC=gcc; Goose -O2, unsanitized",
+  "gcc": "gcc (GCC) 16.2.1 20260810\nCopyright (C) 2026 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "dependencies": {
+    "goose-process": {
+      "repository": "https://github.com/carabistouflette/goose-process",
+      "revision": "35b74eff63118abdd5b00603e1de4bf8ded110a2",
+      "sha256": {
+        "LICENSE": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+        "NOTICE": "8c33b5ff536c52e6b98545218ff2923a12d3fadf4d3dfd72e396dfafc8e54fdd",
+        "THIRD_PARTY.md": "56a720051bbc20e5054606ecae1623752e60a82900c62f9bd02ffc4a597617ff",
+        "native/internal.h": "d64505896c823050f3940263f6b120ce4ae7fc3b44f75ba3bdd74783b279ec4b",
+        "native/launch.c": "1b893ad4bb688af81d8f2ef1e3dbddaabcadeede23768e4da6d518b86c607c3e",
+        "native/process.c": "f454fff590c0141b76bd99c2325d924d095a5f204fcafc58ca2805474cfd3a55",
+        "native/process.h": "407ab67bbe0d68890a25a4da97f6745167030ff7e5760c37e0129a5033ff6667",
+        "process.build": "12122343b26c51d9c3e677c930e65feb447e36026252a5b1f04126145d76c3f9",
+        "process.goose": "80580a9f5639ec22edd1bdddf7927e6c7ba2f52e7419488a29d9384f2059917b"
+      }
+    },
+    "goose-fs": {
+      "repository": "https://github.com/carabistouflette/goose-fs",
+      "revision": "910576e745e9ef4afc7807c4843ddc948836189a",
+      "sha256": {
+        "LICENSE": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+        "fs.build": "4a70bc1f931903fb0b49dbd013338a6761f6eb10dca5c59bd2f19443a47ecf99",
+        "fs.goose": "c5e44adb947cd4c15d0d3f9aaf52b0da88bf4a13cf6bcecf5999bafba0bef988",
+        "native/fs.c": "226b5a9f1ae7693acd6adde61583cb9994911a586ec71f510c4f016194fe23f0",
+        "native/fs.h": "0afd84e5119c0316eb43263afaacf918a702a76714fec5eaaff7dcf9211479f4",
+        "native/fs_internal.h": "aeb2c590efc6c0dcc61c1a662ab4eeb35f6fc32d8aa89360a99acb444e82d13c",
+        "native/handles.c": "ae8e30070697258499a55df04d59d4a4106d23e28a6e745c1438a66734dcc7ce"
+      }
+    },
+    "goose-config": {
+      "repository": "https://github.com/carabistouflette/goose-config",
+      "revision": "f7bef7dcfeab2ca95c94d92d0fbb2320ab3dcb05",
+      "sha256": {
+        "config.goose": "8a5113e14a2d44f4c6c2278c844ec2ad14c466117125dff22fb8c562c1eda4e6",
+        "json_layer.goose": "d6c34a3cb80de194d13cf19d1faeb6ba0923b361d167ccfd37d1ed2c58f55311",
+        "toml.goose": "4358d950c69162d62770d808a6f488422aa6879df8a8d26d5c34e8e12d491cfc",
+        "vendor.goose": "c4b021a0928444a5f049a99eb7a542689ea6803d0d2e845c86ba43a0fc6c31c1",
+        "bindings.goose": "92d9371a5937101d624cfdd3806a495e284d5ccceb6d9d2ca1852d136ee3eb06",
+        "reload.goose": "55d2a1ad3c014cb7ec3b5b6fc04521dade728ed1dac99ed2e57c5ed60fd9a77f",
+        "LICENSE": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+        "THIRD_PARTY_NOTICES.md": "ecf6e74c45e1ab76187181385c19910d9d74a8f31c69a3b9c5586e18c91c252f",
+        "vendor/LICENSE": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+        "vendor/README.md": "5e85ecd3dbbc5c640edcf455a1ff852fe0dae592ff45cefa1c83781eb605d1c4"
+      }
+    },
+    "goose-diff": {
+      "repository": "https://github.com/carabistouflette/goose-diff",
+      "revision": "ba87b7d84dedfb7e90b42a95a473baaa3f95b7ee",
+      "sha256": {
+        "diff.goose": "b20195b15dd36c98d605ecfd76891e000acadcb5a1314bfa82cc8012c0bab8b3",
+        "unified.goose": "64a598dd6e5d13437296af0b7696ecdfc233433cb81df85ed3993b3e0b610c6e",
+        "LICENSE": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+        "NOTICE": "9e92a8193a2c0e6a0a144c9b83326d9ac61338a4099de1241e391a2c77e1bae4"
+      }
+    }
+  },
+  "rounds": 10,
+  "scope": "Shared-host smoke; no speedup, peak-memory bound or cross-machine claim."
+}
