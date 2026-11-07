@@ -104,14 +104,14 @@ class Checker(unittest.TestCase):
         self.assertIn(b'-expected\n+actual\n', err)
 
     def test_diff_escapes_binary_and_literal_sequences(self):
-        expected = b'\x1b[31m\x00\xff\\x41\r\t\n'
+        expected = b'\x1b[31m\x00\xff\\x41\r\t\x7f\x80\n'
         actual = b'new\n'
         err = self.diff_check(expected, actual)
-        self.assertEqual(err, b'goose-check: stdout mismatch at byte 0; expected length 14, actual length 4\n'
+        self.assertEqual(err, b'goose-check: stdout mismatch at byte 0; expected length 16, actual length 4\n'
                          b'goose-check: escaped stdout diff (expected -> actual)\n'
                          b'--- a/input\n+++ b/input\n@@ -1,1 +1,1 @@\n'
-                         b'-\\x1B[31m\\x00\\xFF\\x5Cx41\\x0D\\x09\n+new\n')
-        for unsafe in (b'\x1b', b'\x00', b'\xff', b'\r', b'\t'):
+                         b'-\\x1B[31m\\x00\\xFF\\x5Cx41\\x0D\\x09\\x7F\\x80\n+new\n')
+        for unsafe in (b'\x1b', b'\x00', b'\xff', b'\r', b'\t', b'\x7f', b'\x80'):
             self.assertNotIn(unsafe, err)
         self.assertNotIn(b'\\x41', err)
         # Default diagnostics still disclose none of the binary payload.
@@ -163,6 +163,10 @@ class Checker(unittest.TestCase):
             with self.subTest(options=options):
                 self.run_check(options, self.child('mark', marker), 2)
                 self.assertFalse(marker.exists())
+
+    def test_diff_after_separator_is_a_child_argument(self):
+        expected = self.fixture('diff argument expected', b'["--diff"]')
+        self.run_check(['--stdout', expected], self.child('args', '--diff'))
 
     def test_diff_preserves_error_precedence_and_stderr_policy(self):
         oracle = self.fixture('private expected', b'PRIVATE_STDOUT\n')
