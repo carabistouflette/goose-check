@@ -1,4 +1,7 @@
-# Stdout diff qualification
+# Alpha.1 stdout diff qualification (historical)
+
+This document records alpha.1 evidence and its historical dependency pin. See
+[current context qualification](CONTEXT_VALIDATION.md) for the context consumer.
 
 Production behavior was introduced at `2266217`; documentation/harness checkpoint
 `93ae35f` preserves that code. Local normal/debug GCC and Clang, fault injection,

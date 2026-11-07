@@ -186,6 +186,98 @@ class Checker(unittest.TestCase):
         # The flag neither suppresses nor escapes intentionally inherited stderr.
         self.assertEqual(self.run_check(['--diff'], self.child('stderr', 2)), bytes(range(2)))
 
+    def test_diff_context_zero_one_and_option_order(self):
+        expected = b'a\nb\nc\nd\ne\n'
+        actual = b'a\nb\nC\nd\ne\n'
+        prefix = b'goose-check: escaped stdout diff (expected -> actual)\n--- a/input\n+++ b/input\n'
+        for context, body in [
+            ('0', b'@@ -3,1 +3,1 @@\n-c\n+C\n'),
+            ('1', b'@@ -2,3 +2,3 @@\n b\n-c\n+C\n d\n'),
+        ]:
+            with self.subTest(context=context):
+                # The helper puts --diff after the context option.
+                err = self.diff_check(expected, actual, ['--diff-context', context])
+                self.assertEqual(err.split(b'\n', 1)[1], prefix + body)
+                source = self.fixture('context actual', actual)
+                oracle = self.fixture('context expected', expected)
+                self.assertEqual(self.run_check(['--diff', '--diff-context', context,
+                                               '--stdin', source, '--stdout', oracle], self.child('echo'), 1), err)
+        self.assertEqual(self.diff_check(expected, actual, ['--diff-context', '0001']),
+                         self.diff_check(expected, actual, ['--diff-context', '1']))
+
+    def test_diff_context_compacts_large_output_and_omits_private_context(self):
+        line = b'common-unchanged-data\n'
+        prefix = b'PRIVATE_OMITTED\x1b\\\x00\xff\n' + line * 999
+        expected = prefix + b'old\n' + line * 1000
+        actual = prefix + b'new\n' + line * 1000
+        self.assertGreater(len(expected), 40000)
+        metadata = self.diff_check(expected, actual, enabled=False)
+        err = self.diff_check(expected, actual)
+        block = err[len(metadata):]
+        self.assertEqual(block, b'goose-check: escaped stdout diff (expected -> actual)\n'
+                         b'--- a/input\n+++ b/input\n@@ -998,7 +998,7 @@\n' +
+                         b' ' + line + b' ' + line + b' ' + line + b'-old\n+new\n' +
+                         b' ' + line + b' ' + line + b' ' + line)
+        self.assertLessEqual(len(block), 16384)
+        for omitted in (b'PRIVATE_OMITTED', b'\x1b', b'\x00', b'\xff', b'\\x1B', b'\\xFF'):
+            self.assertNotIn(omitted, err)
+        full = self.diff_check(expected, actual, ['--diff-context', '4096'])
+        self.assertEqual(full, metadata + b'goose-check: stdout diff omitted (resource limit)\n')
+        zero = self.diff_check(expected, actual, ['--diff-context', '0'])
+        self.assertEqual(zero[len(metadata):], b'goose-check: escaped stdout diff (expected -> actual)\n'
+                         b'--- a/input\n+++ b/input\n@@ -1001,1 +1001,1 @@\n-old\n+new\n')
+
+    def test_diff_context_separated_and_merged_hunks(self):
+        middle = b''.join(f'context {i}\n'.encode() for i in range(7))
+        expected = b'a\nold1\n' + middle + b'old2\nz\n'
+        actual = b'a\nnew1\n' + middle + b'new2\nz\n'
+        prefix = b'goose-check: escaped stdout diff (expected -> actual)\n--- a/input\n+++ b/input\n'
+        err = self.diff_check(expected, actual)
+        self.assertEqual(err.split(b'\n', 1)[1], prefix +
+                         b'@@ -1,5 +1,5 @@\n a\n-old1\n+new1\n context 0\n context 1\n context 2\n'
+                         b'@@ -7,5 +7,5 @@\n context 4\n context 5\n context 6\n-old2\n+new2\n z\n')
+        self.assertNotIn(b'context 3', err)
+        merged = self.diff_check(expected, actual, ['--diff-context', '4'])
+        self.assertEqual(merged.split(b'\n', 1)[1], prefix + b'@@ -1,11 +1,11 @@\n a\n-old1\n+new1\n' +
+                         b''.join(b' ' + item + b'\n' for item in middle.splitlines()) + b'-old2\n+new2\n z\n')
+
+    def test_diff_context_prelaunch_rejections(self):
+        marker = self.root / 'context-not-launched'
+        cases = [
+            ['--diff-context', '0'], ['--diff-context', '3'],
+            ['--diff', '--diff-context', '-1'], ['--diff', '--diff-context', '+1'],
+            ['--diff', '--diff-context', '4097'], ['--diff', '--diff-context', '999999999999999999999'],
+            ['--diff', '--diff-context', '1.0'], ['--diff', '--diff-context', 'word'],
+            ['--diff', '--diff-context', ''], ['--diff', '--diff-context'],
+            ['--diff', '--diff-context', '1', '--diff-context', '1'],
+            ['--diff-context=1', '--diff'],
+        ]
+        for options in cases:
+            with self.subTest(options=options):
+                self.run_check(options, self.child('mark', marker), 2)
+                self.assertFalse(marker.exists())
+
+    def test_diff_context_after_separator_and_configuration_scope(self):
+        arguments = ['--diff-context', '1', '--diff']
+        oracle = self.fixture('context child arguments', json.dumps(arguments).encode())
+        self.run_check(['--stdout', oracle], self.child('args', *arguments))
+        expected = b'PRIVATE_expected\n'
+        actual = b'PRIVATE_actual\n'
+        source = self.fixture('config diff actual', actual)
+        oracle = self.fixture('config diff expected', expected)
+        for extension, content in [('json', b'{}'), ('toml', b'')]:
+            defaults = self.fixture('context defaults.' + extension, content)
+            options = ['--config', defaults, '--stdin', source, '--stdout', oracle]
+            err = self.run_check(options, self.child('echo'), 1)
+            self.assertNotIn(b'PRIVATE', err)
+            self.assertNotIn(b'diff', err)
+            # Config remains a numeric-default schema, not an implicit diff toggle.
+            invalid = b'{"diff": true}' if extension == 'json' else b'diff = true\n'
+            defaults = self.fixture('context invalid.' + extension, invalid)
+            marker = self.root / ('config-diff-not-launched-' + extension)
+            self.run_check(['--config', defaults], self.child('mark', marker), 2)
+            self.assertFalse(marker.exists())
+
     def test_prelaunch_rejections(self):
         marker = self.root/'never-launched'
         command = self.child('mark', marker)

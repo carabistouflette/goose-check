@@ -53,7 +53,8 @@ goose-check [options] -- /absolute/program [arguments...]
 --expect-exit N       expected normal exit, 0..255 (default: 0)
 --timeout-ms N        finite process budget, 1..86400000 (default: 30000)
 --output-limit N      independent limit for each checked stream, 0..1048576 (default: 65536)
---diff                opt-in capped escaped stdout diff on mismatch
+--diff                opt-in capped escaped stdout diff (default 3 context lines)
+--diff-context N      context lines, 0..4096; requires --diff
 --config ABSFILE      explicit .json/.toml numeric defaults (maximum 64 KiB)
 ```
 

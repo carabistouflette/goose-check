@@ -9,12 +9,12 @@ const HEADER = "goose-check: escaped stdout diff (expected -> actual)\n";
 const TRUNCATED = "\n[diff truncated]\n";
 const OMITTED = "goose-check: stdout diff omitted (resource limit)\n";
 const HEX = "0123456789ABCDEF";
-fn render(expected: const u8[:], actual: const u8[:], out: u8[>..]&) {
+fn render(expected: const u8[:], actual: const u8[:], out: u8[>..]&, context_lines: i64) {
     out.clear();
     var raw: u8[>..] = [];
-    let error = patch::unified(expected, actual, raw, diff::Limits {
+    let error = patch::unified_context(expected, actual, raw, diff::Limits {
         max_bytes: 65536, max_lines: 4096, max_cells: 262144, max_work: 1048576,
-    }, MAX_DIAGNOSTIC_BYTES);
+    }, MAX_DIAGNOSTIC_BYTES, context_lines);
     if error != diff::Error.None { out.append(OMITTED); return; }
     if raw.len == 0 { return; }
     out.append(HEADER);

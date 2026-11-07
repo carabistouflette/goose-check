@@ -5,7 +5,14 @@ mismatch. Exact byte comparison, existing mismatch metadata and exit code 1 rema
 authoritative. With no flag diagnostics omit fixture contents. There is no config
 key or implicit environment setting for this option.
 
-This explicitly discloses expected and actual stdout, including unchanged context.
+The default retains up to three unchanged context lines around each change.
+`--diff-context N` selects 0..4096 context lines and requires `--diff`; either
+option order is accepted, duplicates/invalid values fail before fixture loading
+or launch. There is no config key for context. Touching/overlapping hunk windows
+merge; separated changes produce separate headers. Zero omits all equal context.
+Comparison input/line/work/matrix limits are unchanged.
+
+This explicitly discloses expected and actual changed stdout plus selected context.
 Treat logs accordingly. Diffing is byte-based: LF terminates lines; final-newline
 presence matters, CRLF is preserved and there is no Unicode normalization.
 Control bytes, DEL, non-ASCII bytes and backslash are escaped as uppercase
@@ -14,14 +21,16 @@ an applicable patch. Labels are fixed; fixture paths are never included.
 
 The additional block is capped at 16,384 bytes including its header and any
 truncation marker, excluding the existing mismatch metadata line. Tokens are
-complete; truncation is explicit. The raw full-file unified hunk is separately
+complete; truncation is explicit. All raw context hunks together are separately
 capped at 16,384 bytes. Library budgets: 65,536 bytes and 4,096 lines per input,
 262,144 matrix cells including sentinels, and 1,048,576 compared byte pairs.
 Matrix work and input scanning have separate bounds; byte comparisons are not an
 instruction or wall-clock budget. Oversized inputs, work, matrix or raw output
 produce one fixed omission note. Normal byte comparison checks the entire capture,
 up to the existing process cap. Logical scratch matrix storage is at most 2 MiB;
-allocator overhead, capacity and runtime OOM are outside these limits.
+allocator overhead, capacity and runtime OOM are outside these limits. Context planning additionally uses bounded
+per-line rows and hunk descriptors (at most 327,704 logical bytes at the consumer
+line limits); allocator capacity is separate.
 
 Diffing runs only after direct-child cleanup and guard restoration. Process,
 launch, signal or expected-exit failures take priority and do not render a diff.
