@@ -100,3 +100,7 @@ An existing matching compiler can be selected with `make GOOSE=/absolute/goose`.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md),
 [dependency notices](THIRD_PARTY.md) and [LICENSE](LICENSE).
+
+Command-line option parsing uses the pinned goose-argparse library. Value options
+accept both `--name value` and `--name=value`; repeated options are rejected.
+The mandatory `--` separates checker options from the unchanged child arguments.

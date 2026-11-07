@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
+import argparse from "./vendor/goose-argparse";
 import process from "./vendor/goose-process";
 import fs from "./vendor/goose-fs";
 import config from "./vendor/goose-config";
@@ -32,39 +33,42 @@ fn decimal(text: const u8[:], maximum: i64) -> i64 {
 fn main() {
     let argv = args();
     if argv.len == 2 && argv[1] == "--help" { usage(); return; }
-    var input_path:    const u8[:] = "";
-    var expected_path: const u8[:] = "";
-    var stderr_path:   const u8[:] = "";
-    var config_path:   const u8[:] = "";
-    var expected_exit: i64         = 0;
-    var timeout:       i64         = 30000;
-    var limit:         i64         = 65536;
-    var seen:          i64         = 0;
-    var position:      i64         = 1;
-    while position < argv.len && argv[position] != "--" {
-        let option = argv[position];
-        let bit: i64 = if option == "--stdin" { 1 } else if option == "--stdout" { 2 }
-            else if option == "--expect-exit" { 4 } else if option == "--timeout-ms" { 8 }
-            else if option == "--output-limit" { 16 } else if option == "--config" { 32 }
-            else if option == "--stderr" { 64 } else { 0 };
-        if bit == 0 || (seen & bit) != 0 || position + 1 >= argv.len { usage(); exit(2); }
+    var expected_exit: i64 = 0;
+    var timeout:       i64 = 30000;
+    var limit:         i64 = 65536;
+    var seen:          i64 = 0;
+    var separator = argv.len;
+    for argument, index in argv { if index > 0 && argument == "--" { separator = index; break; } }
+    if separator + 1 >= argv.len { usage(); exit(2); }
+    let spec = [argparse::option("stdin"), argparse::option("stdout"), argparse::option("stderr"),
+                argparse::option("config"), argparse::option("expect-exit"),
+                argparse::option("timeout-ms"), argparse::option("output-limit")];
+    let options = argparse::parse(spec, argv[1..separator]);
+    if options.error != argparse::Error.None || options.positionals.len != 0 { usage(); exit(2); }
+    let input_path = str(options.get("stdin"));
+    let expected_path = str(options.get("stdout"));
+    let stderr_path = str(options.get("stderr"));
+    let config_path = str(options.get("config"));
+    for entry in options.entries {
+        let bit: i64 = if entry.name == "stdin" { 1 } else if entry.name == "stdout" { 2 }
+            else if entry.name == "expect-exit" { 4 } else if entry.name == "timeout-ms" { 8 }
+            else if entry.name == "output-limit" { 16 } else if entry.name == "config" { 32 }
+            else { 64 };
+        if (seen & bit) != 0 { usage(); exit(2); }
         seen |= bit;
-        let value = argv[position + 1];
+        let value = entry.value;
         if bit == 32 {
             if !settings::valid_path(value) { fail("config requires a strict absolute .json or .toml path", 2); }
-            config_path = value;
         } else if bit == 1 || bit == 2 || bit == 64 {
             if !fs::valid_path(value) { fail("fixture requires a strict absolute path", 2); }
-            if bit == 1 { input_path = value; } else if bit == 2 { expected_path = value; } else { stderr_path = value; }
         } else {
             let maximum: i64 = if bit == 4 { 255 } else if bit == 8 { process::MAX_TIMEOUT_MS } else { process::MAX_OUTPUT_BYTES };
             let number = decimal(value, maximum);
             if number < 0 || (bit == 8 && number == 0) { fail("invalid numeric option", 2); }
             if bit == 4 { expected_exit = number; } else if bit == 8 { timeout = number; } else { limit = number; }
         }
-        position += 2;
     }
-    position += 1;
+    var position = separator + 1;
     if position >= argv.len || argv[position].len == 0 || argv[position][0] != '/' { usage(); exit(2); }
     var command: (const u8[:])[>..] = [];
     while position < argv.len { command.push(argv[position]); position += 1; }
