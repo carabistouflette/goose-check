@@ -32,3 +32,9 @@ Explicit `--diff` discloses expected/actual stdout, including equal context, as
 escaped diagnostics capped at 16 KiB. Escaping controls terminal bytes, not data
 confidentiality. Resource exhaustion omits the diff and preserves mismatch status.
 See [stdout diff boundaries](docs/STDOUT_DIFF.md).
+
+`--diff-algorithm sparse` is explicit and requires --diff. Its complete trace
+rows are bounded independently from LCS matrix cells, including byte-free length
+mismatches. There is no fallback or automatic strategy selection. Dense inputs
+can exhaust sparse states even when LCS succeeds. Escaping and the 16 KiB cap
+remain unchanged; selected stdout/context is still disclosed intentionally.

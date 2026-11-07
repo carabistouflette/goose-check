@@ -7,7 +7,7 @@ and CLI tests in Makefiles or CI. Apache-2.0; experimental, with no release tag.
 Source and immutable dependency identities are recorded in Git and vendor/pins.json.
 
 Requires 64-bit Linux/glibc 2.34+, kernel pidfds (5.3+), Linux headers providing
-openat2, Git, Make, CMake 3.27+, C/C++20 compilers and Python 3.11+. The pinned
+openat2, Git, Make, CMake 3.27+, C/C++20 compilers, GNU patch and Python 3.11+. The pinned
 compiler revision is in GOOSE_REVISION. Other revisions are not promised.
 
 ```sh
@@ -55,6 +55,7 @@ goose-check [options] -- /absolute/program [arguments...]
 --output-limit N      independent limit for each checked stream, 0..1048576 (default: 65536)
 --diff                opt-in capped escaped stdout diff (default 3 context lines)
 --diff-context N      context lines, 0..4096; requires --diff
+--diff-algorithm NAME lcs (default) or sparse; requires --diff
 --config ABSFILE      explicit .json/.toml numeric defaults (maximum 64 KiB)
 ```
 

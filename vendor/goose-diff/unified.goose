@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 namespace patch;
 import .diff;
+import .sparse;
 import std;
 
 const MAX_OUTPUT_BYTES = 8388608;
@@ -172,6 +173,21 @@ fn unified_context(old: const u8[:], fresh: const u8[:], out: u8[>..]&, limits: 
        context_lines < 0 || context_lines > diff::MAX_LINES { return diff::Error.InvalidOptions; }
     var edits: diff::Edit[>..] = [];
     let error = diff::compare(old, fresh, edits, limits);
+    if error != diff::Error.None { return error; }
+    if !render_context(old, fresh, edits, out, output_limit, context_lines) {
+        out.clear(); return diff::Error.LimitExceeded;
+    }
+    return diff::Error.None;
+}
+
+// Explicit sparse strategy with independent trace-state limits. The validated
+// script uses the same byte-exact context renderer; LCS APIs stay unchanged.
+fn unified_sparse_context(old: const u8[:], fresh: const u8[:], out: u8[>..]&, limits: sparse::Limits, output_limit: i64, context_lines: i64) -> diff::Error {
+    out.clear();
+    if output_limit < 0 || output_limit > MAX_OUTPUT_BYTES ||
+       context_lines < 0 || context_lines > diff::MAX_LINES { return diff::Error.InvalidOptions; }
+    var edits: diff::Edit[>..] = [];
+    let error = sparse::compare(old, fresh, edits, limits);
     if error != diff::Error.None { return error; }
     if !render_context(old, fresh, edits, out, output_limit, context_lines) {
         out.clear(); return diff::Error.LimitExceeded;

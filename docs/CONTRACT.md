@@ -14,6 +14,8 @@ Options, each accepted at most once:
 - `--stderr ABSOLUTE_FILE`: optional expected stderr; at most output-limit.
 - `--diff`: opt into escaped stdout differences, default 3 context lines, capped
   at 16 KiB of added diagnostics.
+- `--diff-algorithm NAME`: exact `lcs` (default) or `sparse`, requires `--diff`;
+  sparse has a separate trace-state budget and may return different minimal hunks.
 - `--diff-context INTEGER`: context 0..4096, requires `--diff`; duplicate/invalid
   values fail before fixture reads or launch.
 - `--expect-exit INTEGER`: default 0, range 0..255.

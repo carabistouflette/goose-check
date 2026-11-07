@@ -15,7 +15,7 @@ extern fn recover(pid: i64) = "gc_recover";
 extern fn diagnostic(message: const u8[:]) = "gc_diagnostic";
 
 fn usage() {
-    diagnostic("usage: goose-check [--config ABSFILE.json|ABSFILE.toml] [--stdin ABSFILE] [--stdout ABSFILE] [--stderr ABSFILE] [--expect-exit N] [--timeout-ms N] [--output-limit N] [--diff [--diff-context N]] -- /absolute/program [args...]\n");
+    diagnostic("usage: goose-check [--config ABSFILE.json|ABSFILE.toml] [--stdin ABSFILE] [--stdout ABSFILE] [--stderr ABSFILE] [--expect-exit N] [--timeout-ms N] [--output-limit N] [--diff [--diff-context N] [--diff-algorithm lcs|sparse]] -- /absolute/program [args...]\n");
 }
 fn fail(message: const u8[:], code: i32) {
     diagnostic(str("goose-check: ", message, "\n")); exit(code);
@@ -42,6 +42,7 @@ fn main() {
     var timeout:       i64         = 30000;
     var limit:         i64         = 65536;
     var show_diff = false;
+    var use_sparse = false;
     var context_lines: i64 = 3;
     var seen:          i64 = 0;
     var position:      i64 = 1;
@@ -54,13 +55,16 @@ fn main() {
         let bit: i64 = if option == "--stdin" { 1 } else if option == "--stdout" { 2 }
             else if option == "--expect-exit" { 4 } else if option == "--timeout-ms" { 8 }
             else if option == "--output-limit" { 16 } else if option == "--config" { 32 }
-            else if option == "--stderr" { 64 } else if option == "--diff-context" { 128 } else { 0 };
+            else if option == "--stderr" { 64 } else if option == "--diff-context" { 128 } else if option == "--diff-algorithm" { 256 } else { 0 };
         if bit == 0 || (seen & bit) != 0 || position + 1 >= argv.len { usage(); exit(2); }
         seen |= bit;
         let value = argv[position + 1];
         if bit == 32 {
             if !settings::valid_path(value) { fail("config requires a strict absolute .json or .toml path", 2); }
             config_path = value;
+        } else if bit == 256 {
+            if value == "sparse" { use_sparse = true; }
+            else if value != "lcs" { fail("invalid diff algorithm", 2); }
         } else if bit == 1 || bit == 2 || bit == 64 {
             if !fs::valid_path(value) { fail("fixture requires a strict absolute path", 2); }
             if bit == 1 { input_path = value; } else if bit == 2 { expected_path = value; } else { stderr_path = value; }
@@ -73,6 +77,7 @@ fn main() {
         position += 2;
     }
     if (seen & 128) != 0 && !show_diff { fail("--diff-context requires --diff", 2); }
+    if (seen & 256) != 0 && !show_diff { fail("--diff-algorithm requires --diff", 2); }
     position += 1;
     if position >= argv.len || argv[position].len == 0 || argv[position][0] != '/' { usage(); exit(2); }
     var command: (const u8[:])[>..] = [];
@@ -189,7 +194,7 @@ fn main() {
             "; expected length ", expected.len, ", actual length ", actual.len, "\n"));
         if show_diff {
             var detail: u8[>..] = [];
-            difference::render(expected, actual, detail, context_lines);
+            difference::render(expected, actual, detail, context_lines, use_sparse);
             diagnostic(detail);
         }
         exit(1);

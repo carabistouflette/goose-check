@@ -278,6 +278,155 @@ class Checker(unittest.TestCase):
             self.run_check(['--config', defaults], self.child('mark', marker), 2)
             self.assertFalse(marker.exists())
 
+    def test_diff_algorithm_default_lcs_and_sparse_tie(self):
+        for expected, actual in [(b'a\n', b'b\n'), (b'a\nb\n', b'b\na\n'),
+                                 (b'\x00\xff\n', b'new\n')]:
+            with self.subTest(expected=expected, actual=actual):
+                default = self.diff_check(expected, actual)
+                self.assertEqual(self.diff_check(expected, actual, ['--diff-algorithm', 'lcs']), default)
+        expected, actual = b'a\n', b'b\n'
+        metadata = self.diff_check(expected, actual, enabled=False)
+        sparse = self.diff_check(expected, actual, ['--diff-algorithm', 'sparse'])
+        self.assertEqual(sparse, metadata + b'goose-check: escaped stdout diff (expected -> actual)\n'
+                         b'--- a/input\n+++ b/input\n@@ -1,1 +1,1 @@\n+b\n-a\n')
+        oracle = self.fixture('algorithm expected', expected)
+        source = self.fixture('algorithm actual', actual)
+        self.assertEqual(self.run_check(['--diff', '--diff-algorithm', 'sparse', '--stdout', oracle,
+                                        '--stdin', source], self.child('echo'), 1), sparse)
+
+    def test_diff_algorithm_sparse_far_edits_and_patch_application(self):
+        original = [f'field_{i:04d}=unchanged\n'.encode() for i in range(1200)]
+        cases = []
+        for indices in [(80, 1120), (80, 600, 1120)]:
+            changed = original.copy()
+            for at in indices:
+                changed[at] = changed[at].replace(b'unchanged', b'updated!!')
+            cases.append((f'generated {indices}', b''.join(original), b''.join(changed)))
+        repeated = [b'a\n', b'b\n'] * 600
+        changed = repeated.copy(); changed[80] = b'x\n'; changed[1120] = b'y\n'
+        cases.append(('repeated', b''.join(repeated), b''.join(changed)))
+        diagnostics = (ROOT / 'bench/fixtures/compiler-transcript/expected.bin').read_bytes().splitlines(keepends=True) * 2
+        self.assertEqual(len(diagnostics), 800)
+        changed = diagnostics.copy()
+        for at in (41, 42, 761, 762):
+            self.assertIn(b'missing_old', changed[at])
+            changed[at] = changed[at].replace(b'missing_old', b'missing_new')
+        cases.append(('diagnostics', b''.join(diagnostics), b''.join(changed)))
+        for name, expected, actual in cases:
+            with self.subTest(case=name):
+                metadata = self.diff_check(expected, actual, enabled=False)
+                default = self.diff_check(expected, actual)
+                self.assertEqual(default, metadata + b'goose-check: stdout diff omitted (resource limit)\n')
+                self.assertEqual(self.diff_check(expected, actual, ['--diff-algorithm', 'lcs']), default)
+                rendered = self.diff_check(expected, actual, ['--diff-algorithm', 'sparse'])
+                self.assertTrue(rendered.startswith(metadata))
+                block = rendered[len(metadata):]
+                prefix = b'goose-check: escaped stdout diff (expected -> actual)\n'
+                self.assertTrue(block.startswith(prefix))
+                self.assertLessEqual(len(block), 16384)
+                self.assertNotIn(b'omitted', block); self.assertNotIn(b'truncated', block)
+                patch = block[len(prefix):]
+                # These fixtures are printable ASCII plus LF, so diagnostics are
+                # independently applicable without undoing any escape policy.
+                self.assertNotIn(b'\\x', patch)
+                target = self.root / 'sparse-patch-input'
+                target.write_bytes(expected)
+                applied = subprocess.run(['patch', '--batch', '--silent', '--binary', '--forward', '--fuzz=0', str(target)],
+                                         input=patch, capture_output=True, timeout=15)
+                self.assertEqual(applied.returncode, 0, (applied.stdout, applied.stderr))
+                self.assertEqual(target.read_bytes(), actual)
+
+    def test_diff_algorithm_sparse_never_falls_back(self):
+        # 401*401 cells fit LCS, but distance 800 requires 321201 trace slots.
+        expected, actual = b'a\n' * 400, b'b\n' * 400
+        metadata = self.diff_check(expected, actual, enabled=False)
+        lcs = self.diff_check(expected, actual)
+        self.assertIn(b'@@ -1,400 +1,400 @@', lcs)
+        self.assertNotIn(b'omitted', lcs)
+        self.assertEqual(self.diff_check(expected, actual, ['--diff-algorithm', 'lcs']), lcs)
+        self.assertEqual(self.diff_check(expected, actual, ['--diff-algorithm', 'sparse']),
+                         metadata + b'goose-check: stdout diff omitted (resource limit)\n')
+
+    def test_diff_algorithm_sparse_limits_keep_status(self):
+        cases = [
+            ('bytes', b'a' * 65537, b'b\n', ['--output-limit', '1048576']),
+            ('lines', b'a\n' * 4097, b'b\n', []),
+            ('work', (b'a' * 2997 + b'x\n') * 20, (b'a' * 2997 + b'y\n') * 20, []),
+            ('raw output', b'a' * 9000 + b'\n', b'b' * 9000 + b'\n', []),
+        ]
+        for name, expected, actual, options in cases:
+            with self.subTest(limit=name):
+                metadata = self.diff_check(expected, actual, options, enabled=False)
+                self.assertEqual(self.diff_check(expected, actual, [*options, '--diff-algorithm', 'sparse']),
+                                 metadata + b'goose-check: stdout diff omitted (resource limit)\n')
+
+    def test_diff_algorithm_sparse_escaping_and_truncation(self):
+        options = ['--diff-algorithm', 'sparse']
+        expected = b'\x1b[31m\x00\xff\\x41\r\t\x7f\x80\n'
+        actual = b'new\n'
+        err = self.diff_check(expected, actual, options)
+        self.assertEqual(err, b'goose-check: stdout mismatch at byte 0; expected length 16, actual length 4\n'
+                         b'goose-check: escaped stdout diff (expected -> actual)\n'
+                         b'--- a/input\n+++ b/input\n@@ -1,1 +1,1 @@\n'
+                         b'+new\n-\\x1B[31m\\x00\\xFF\\x5Cx41\\x0D\\x09\\x7F\\x80\n')
+        for unsafe in (b'\x1b', b'\x00', b'\xff', b'\r', b'\t', b'\x7f', b'\x80', b'\\x41'):
+            self.assertNotIn(unsafe, err)
+        err = self.diff_check(b'\x00' * 3000 + b'\n', b'\xff' * 3000 + b'\n', options)
+        block = err.split(b'\n', 1)[1]
+        self.assertLessEqual(len(block), 16384)
+        self.assertTrue(block.endswith(b'\n[diff truncated]\n'))
+        self.assertIn(b'\\x00', block); self.assertIn(b'\\xFF', block)
+        body = block[:-len(b'\n[diff truncated]\n')]
+        at = 0
+        while at < len(body):
+            if body[at] == 92:
+                token = body[at:at + 4]
+                self.assertEqual(len(token), 4); self.assertEqual(token[:2], b'\\x')
+                self.assertTrue(all(c in b'0123456789ABCDEF' for c in token[2:])); at += 4
+            else:
+                at += 1
+        self.assertNotIn(b'\x00', block); self.assertNotIn(b'\xff', block)
+
+    def test_diff_algorithm_prelaunch_rejections(self):
+        marker = self.root / 'algorithm-not-launched'
+        cases = [
+            ['--diff-algorithm', 'lcs'], ['--diff-algorithm', 'sparse'],
+            ['--diff', '--diff-algorithm'], ['--diff', '--diff-algorithm', ''],
+            ['--diff', '--diff-algorithm', 'LCS'], ['--diff', '--diff-algorithm', 'Sparse'],
+            ['--diff', '--diff-algorithm', 'auto'], ['--diff', '--diff-algorithm', ' sparse'],
+            ['--diff', '--diff-algorithm', 'sparse '], ['--diff', '--diff-algorithm=sparse'],
+            ['--diff', '--diff-algorithm', 'lcs', '--diff-algorithm', 'sparse'],
+            ['--diff', '--diff-algorithm', 'sparse', '--diff-algorithm', 'sparse'],
+        ]
+        for options in cases:
+            with self.subTest(options=options):
+                self.run_check(options, self.child('mark', marker), 2)
+                self.assertFalse(marker.exists())
+
+    def test_diff_algorithm_scope_and_error_precedence(self):
+        arguments = ['--diff-algorithm', 'sparse', '--diff']
+        oracle = self.fixture('algorithm child arguments', json.dumps(arguments).encode())
+        self.run_check(['--stdout', oracle], self.child('args', *arguments))
+        marker = self.root / 'algorithm-config-not-launched'
+        for extension, content in [('json', b'{"diff_algorithm":"sparse"}'), ('toml', b'diff_algorithm="sparse"\n')]:
+            path = self.fixture('algorithm invalid.' + extension, content)
+            self.run_check(['--diff', '--diff-algorithm', 'sparse', '--config', path], self.child('mark', marker), 2)
+            self.assertFalse(marker.exists())
+        options = ['--diff', '--diff-algorithm', 'sparse']
+        self.assertEqual(self.diff_check(b'matches\n', b'matches\n', ['--diff-algorithm', 'sparse']), b'')
+        expected = self.fixture('algorithm private stdout', b'PRIVATE_STDOUT\n')
+        for command, extra, code, message in [
+            (self.child('exit', 7), [], 1, b'exit mismatch'),
+            (self.child('output', 33), ['--output-limit', 32], 125, b'process error'),
+            ([str(self.root / 'missing-program')], [], 127, b'command launch failed'),
+        ]:
+            err = self.run_check([*options, '--stdout', expected, *extra], command, code)
+            self.assertIn(message, err); self.assertNotIn(b'diff', err); self.assertNotIn(b'PRIVATE_STDOUT', err)
+        stderr = self.fixture('algorithm private stderr', b'PRIVATE_STDERR\n')
+        err = self.run_check([*options, '--stderr', stderr], self.child('stderr', 2), 1)
+        self.assertIn(b'stderr mismatch', err); self.assertNotIn(b'diff', err); self.assertNotIn(b'PRIVATE_STDERR', err)
+        self.assertEqual(self.run_check(options, self.child('stderr', 2)), bytes(range(2)))
+
     def test_prelaunch_rejections(self):
         marker = self.root/'never-launched'
         command = self.child('mark', marker)
