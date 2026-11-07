@@ -11,7 +11,10 @@ parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--cc', required=True)
 parser.add_argument('--sanitize', action='store_true')
 parser.add_argument('--faults', action='store_true')
+parser.add_argument('--summary-faults', action='store_true')
 a = parser.parse_args()
+if a.faults and a.summary_faults:
+    parser.error("fault fixture modes are mutually exclusive")
 found = shutil.which(a.cc)
 if not found:
     parser.error('compiler executable not found')
@@ -26,6 +29,12 @@ if a.faults:
     frozen.parent.mkdir(exist_ok=True)
     frozen.write_bytes(source)
     link += [str(frozen), '-Wl,--wrap=syscall,--wrap=kill,--wrap=waitpid,--wrap=clock_gettime,--wrap=gc_recover,--wrap=gc_guard_begin']
+if a.summary_faults:
+    source = (root/'tests/summary_write.c').read_bytes()
+    frozen = root / '.build' / ('summary-' + hashlib.sha256(source).hexdigest() + '.c')
+    frozen.parent.mkdir(exist_ok=True)
+    frozen.write_bytes(source)
+    link += [str(frozen), '-Wl,--wrap=write,--wrap=pthread_sigmask']
 body = ('#!/usr/bin/env python3\nimport os,sys\n'
         f'compiler={str(compiler)!r}\nextra={extra!r}\nlink={link!r}\n'
         'args=sys.argv[1:]\n'

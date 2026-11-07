@@ -23,7 +23,7 @@ build: check
 debug: check
 	mkdir -p .build
 	"$(GOOSE)" build check.goose --cc "$$(python3 scripts/compiler.py --cc "$(CC)" $(SANITIZER_OPTION))" --debug --no-bce -o .build/goose-check-debug
-test: build debug
+test: build debug test-summary-writes
 	$(RUN_ENV) python3 tests/run.py --tool .build/goose-check --goose "$(GOOSE)" --cc "$$(command -v "$(CC)")"
 	$(RUN_ENV) python3 tests/run.py --tool .build/goose-check-debug --goose "$(GOOSE)" --cc "$$(command -v "$(CC)")"
 	$(RUN_ENV) python3 tests/summary.py --tool .build/goose-check
@@ -45,3 +45,10 @@ example: build
 analyze:
 	mkdir -p .build
 	clang --analyze -std=c11 -Wall -Wextra -Werror native/caller.c -o .build/caller.plist
+
+.PHONY: test-summary-writes
+test-summary-writes: check
+	mkdir -p .build
+	"$(GOOSE)" format --check tests/summary_write.goose
+	"$(GOOSE)" build tests/summary_write.goose --standalone --cc "$$(python3 scripts/compiler.py --cc "$(CC)" $(SANITIZER_OPTION) --summary-faults)" --debug --no-bce -o .build/summary-write
+	$(RUN_ENV) python3 tests/summary_write.py --tool .build/summary-write
