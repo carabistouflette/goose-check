@@ -4,7 +4,9 @@ The maintained tests run the compiled CLI, not a Python substitute for its
 process behavior. Release and debug builds check exact binary fixtures, finite
 stdin EOF, independent inherited stderr, stdout bounds, exit statuses, literal
 argument boundaries, prelaunch errors, no shell fallback, timeouts, and direct
-SIGINT/SIGTERM to the checker. Child pidfds are acquired during private-session
+SIGINT/SIGTERM to the checker. Opt-in stdout diff cases check byte escaping,
+disclosure defaults, truncation, resource-limit omission, option placement and
+error precedence. Child pidfds are acquired during private-session
 readiness before cancellation; gone identities are checked after the checker
 returns. The controller bounds waits, owns unreaped session leaders for failure
 cleanup, and checks its own descriptors and unwaited children.

@@ -12,11 +12,10 @@ Options, each accepted at most once:
 - `--stdin ABSOLUTE_FILE`: default empty input; at most 1 MiB.
 - `--stdout ABSOLUTE_FILE`: default empty expected output; at most output-limit.
 - `--stderr ABSOLUTE_FILE`: optional expected stderr; at most output-limit.
-- `--diff`: opt in to an escaped, bounded unified diff for stdout mismatches.
+- `--diff`: opt into escaped stdout differences, capped at 16 KiB of added diagnostics.
 - `--expect-exit INTEGER`: default 0, range 0..255.
 - `--timeout-ms INTEGER`: default 30000, range 1..86400000.
 - `--output-limit INTEGER`: default 65536, range 0..1048576.
-- `--diff`: opt-in escaped stdout differences; at most 16 KiB of additional diagnostics.
 - `--config ABSOLUTE_FILE`: opt-in `.json`/`.toml` numeric defaults, at most
   65,536 bytes. Supplied numeric flags override these defaults regardless
   of option order; see [configuration](CONFIGURATION.md).
