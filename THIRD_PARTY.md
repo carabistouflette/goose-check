@@ -3,7 +3,7 @@
 All project sources are Apache-2.0. `vendor/pins.json` records complete upstream
 revisions and hashes for each bundled source, manifest, license and notice.
 
-- goose-diff: `b082091e2dda4d1414bdcab35a3443a72ea77335` (full immutable revision and hashes in vendor/pins.json; bounded line comparison and context patch rendering).
+- goose-diff: `4dc00ba7dae34b28625b6e3ece8ccae25ef3debb` (full immutable revision and hashes in vendor/pins.json; bounded line comparison and context patch rendering).
 - goose-process: `35b74eff63118abdd5b00603e1de4bf8ded110a2` (reviewed streaming implementation; experimental, no new tag).
 - goose-fs: `910576e745e9ef4afc7807c4843ddc948836189a`.
 - goose-config: `f7bef7dcfeab2ca95c94d92d0fbb2320ab3dcb05` (experimental, untagged).
