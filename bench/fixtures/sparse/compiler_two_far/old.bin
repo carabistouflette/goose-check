@@ -1,0 +1,800 @@
+compilation unit 0
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 1
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 2
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 3
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 4
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 5
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 6
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 7
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 8
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 9
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 10
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 11
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 12
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 13
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 14
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 15
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 16
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 17
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 18
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 19
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 20
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 21
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 22
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 23
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 24
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 25
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 26
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 27
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 28
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 29
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 30
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 31
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 32
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 33
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 34
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 35
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 36
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 37
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 38
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 39
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 40
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 41
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 42
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 43
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 44
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 45
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 46
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 47
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 48
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 49
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 50
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 51
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 52
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 53
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 54
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 55
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 56
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 57
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 58
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 59
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 60
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 61
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 62
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 63
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 64
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 65
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 66
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 67
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 68
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 69
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 70
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 71
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 72
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 73
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 74
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 75
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 76
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 77
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 78
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 79
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 80
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 81
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 82
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 83
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 84
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 85
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 86
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 87
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 88
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 89
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 90
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 91
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 92
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 93
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 94
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 95
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 96
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 97
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 98
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 99
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 100
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 101
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 102
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 103
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 104
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 105
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 106
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 107
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 108
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 109
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 110
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 111
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 112
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 113
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 114
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 115
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 116
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 117
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 118
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 119
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 120
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 121
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 122
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 123
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 124
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 125
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 126
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 127
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 128
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 129
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 130
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 131
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 132
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 133
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 134
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 135
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 136
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 137
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 138
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 139
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 140
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 141
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 142
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 143
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 144
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 145
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 146
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 147
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 148
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 149
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 150
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 151
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 152
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 153
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 154
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 155
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 156
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 157
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 158
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 159
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 160
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 161
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 162
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 163
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 164
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 165
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 166
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 167
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 168
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 169
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 170
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 171
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 172
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 173
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 174
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 175
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 176
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 177
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 178
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 179
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 180
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 181
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 182
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 183
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 184
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 185
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 186
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 187
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 188
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 189
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 190
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 191
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 192
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 193
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 194
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 195
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 196
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 197
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 198
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2
+compilation unit 199
+.build/context-diagnostic-old.goose:2: error: unknown function: missing_old
+fn main() { missing_old(); }
+  in fn main() instantiated from .build/context-diagnostic-old.goose:2

@@ -1,4 +1,7 @@
-# Context consumer qualification
+# Alpha.2 context consumer qualification (historical)
+
+This page records alpha.2 context evidence. See [sparse qualification](SPARSE_VALIDATION.md)
+for the current explicit strategy selector and resource contracts.
 
 The consumer uses bounded goose-diff context rendering at the full revision in
 vendor/pins.json. --diff defaults to three context lines; `--diff-context N`
