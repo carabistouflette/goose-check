@@ -9,7 +9,7 @@ explicit/default LCS identity, sparse tie ordering, four far-edit recoveries wit
 independent no-fuzz patch application, and a dense no-fallback guard. They also
 cover strict prelaunch option validation, byte/work/trace/output limits, binary
 escaping/truncation, config/child scope and process/stderr error precedence.
-All 19 targeted diff methods pass. Full release qualification runs normal/debug
+All 19 targeted diff methods pass. The full 32-test CLI suite passes normal/debug
 GCC/Clang, ownership/fault tests, both ASan/UBSan configurations and static analysis.
 
 Independent design, source/security and test reviews found no code blocker.
@@ -31,3 +31,7 @@ and fallback are not introduced.
 
 Hosted exact-source CI, clean public clone and final publication/catalog pins
 remain separate gates recorded in the PR and parent receipt.
+
+[All 270 real-command samples](../bench/results/strategies-alpha3/) are retained,
+including sparse omissions and default/explicit-LCS identity controls. They
+qualify the feature without claiming an end-to-end speedup or RSS bound.
