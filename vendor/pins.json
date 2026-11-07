@@ -45,10 +45,10 @@
   },
   "goose-diff": {
     "repository": "https://github.com/carabistouflette/goose-diff",
-    "revision": "ba87b7d84dedfb7e90b42a95a473baaa3f95b7ee",
+    "revision": "b082091e2dda4d1414bdcab35a3443a72ea77335",
     "sha256": {
       "diff.goose": "b20195b15dd36c98d605ecfd76891e000acadcb5a1314bfa82cc8012c0bab8b3",
-      "unified.goose": "64a598dd6e5d13437296af0b7696ecdfc233433cb81df85ed3993b3e0b610c6e",
+      "unified.goose": "d512ce44be549c18629bacda939fa47e6abed204c394958231713b30a7a72b48",
       "LICENSE": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
       "NOTICE": "9e92a8193a2c0e6a0a144c9b83326d9ac61338a4099de1241e391a2c77e1bae4"
     }

@@ -15,7 +15,7 @@ extern fn recover(pid: i64) = "gc_recover";
 extern fn diagnostic(message: const u8[:]) = "gc_diagnostic";
 
 fn usage() {
-    diagnostic("usage: goose-check [--config ABSFILE.json|ABSFILE.toml] [--stdin ABSFILE] [--stdout ABSFILE] [--stderr ABSFILE] [--expect-exit N] [--timeout-ms N] [--output-limit N] [--diff] -- /absolute/program [args...]\n");
+    diagnostic("usage: goose-check [--config ABSFILE.json|ABSFILE.toml] [--stdin ABSFILE] [--stdout ABSFILE] [--stderr ABSFILE] [--expect-exit N] [--timeout-ms N] [--output-limit N] [--diff [--diff-context N]] -- /absolute/program [args...]\n");
 }
 fn fail(message: const u8[:], code: i32) {
     diagnostic(str("goose-check: ", message, "\n")); exit(code);
@@ -42,8 +42,9 @@ fn main() {
     var timeout:       i64         = 30000;
     var limit:         i64         = 65536;
     var show_diff = false;
-    var seen:     i64 = 0;
-    var position: i64 = 1;
+    var context_lines: i64 = 3;
+    var seen:          i64 = 0;
+    var position:      i64 = 1;
     while position < argv.len && argv[position] != "--" {
         let option = argv[position];
         if option == "--diff" {
@@ -53,7 +54,7 @@ fn main() {
         let bit: i64 = if option == "--stdin" { 1 } else if option == "--stdout" { 2 }
             else if option == "--expect-exit" { 4 } else if option == "--timeout-ms" { 8 }
             else if option == "--output-limit" { 16 } else if option == "--config" { 32 }
-            else if option == "--stderr" { 64 } else { 0 };
+            else if option == "--stderr" { 64 } else if option == "--diff-context" { 128 } else { 0 };
         if bit == 0 || (seen & bit) != 0 || position + 1 >= argv.len { usage(); exit(2); }
         seen |= bit;
         let value = argv[position + 1];
@@ -64,13 +65,14 @@ fn main() {
             if !fs::valid_path(value) { fail("fixture requires a strict absolute path", 2); }
             if bit == 1 { input_path = value; } else if bit == 2 { expected_path = value; } else { stderr_path = value; }
         } else {
-            let maximum: i64 = if bit == 4 { 255 } else if bit == 8 { process::MAX_TIMEOUT_MS } else { process::MAX_OUTPUT_BYTES };
+            let maximum: i64 = if bit == 4 { 255 } else if bit == 8 { process::MAX_TIMEOUT_MS } else if bit == 128 { 4096 } else { process::MAX_OUTPUT_BYTES };
             let number = decimal(value, maximum);
             if number < 0 || (bit == 8 && number == 0) { fail("invalid numeric option", 2); }
-            if bit == 4 { expected_exit = number; } else if bit == 8 { timeout = number; } else { limit = number; }
+            if bit == 4 { expected_exit = number; } else if bit == 8 { timeout = number; } else if bit == 128 { context_lines = number; } else { limit = number; }
         }
         position += 2;
     }
+    if (seen & 128) != 0 && !show_diff { fail("--diff-context requires --diff", 2); }
     position += 1;
     if position >= argv.len || argv[position].len == 0 || argv[position][0] != '/' { usage(); exit(2); }
     var command: (const u8[:])[>..] = [];
@@ -187,7 +189,7 @@ fn main() {
             "; expected length ", expected.len, ", actual length ", actual.len, "\n"));
         if show_diff {
             var detail: u8[>..] = [];
-            difference::render(expected, actual, detail);
+            difference::render(expected, actual, detail, context_lines);
             diagnostic(detail);
         }
         exit(1);

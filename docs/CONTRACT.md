@@ -16,7 +16,10 @@ Options, each accepted at most once:
 - `--expect-exit INTEGER`: default 0, range 0..255.
 - `--timeout-ms INTEGER`: default 30000, range 1..86400000.
 - `--output-limit INTEGER`: default 65536, range 0..1048576.
-- `--diff`: opt-in escaped stdout differences; at most 16 KiB of additional diagnostics.
+- `--diff`: opt-in escaped stdout differences, default 3 context lines; at most
+  16 KiB of additional diagnostics.
+- `--diff-context INTEGER`: context 0..4096, requires `--diff`; duplicate/invalid
+  values fail before fixture reads or launch.
 - `--config ABSOLUTE_FILE`: opt-in `.json`/`.toml` numeric defaults, at most
   65,536 bytes. Supplied numeric flags override these defaults regardless
   of option order; see [configuration](CONFIGURATION.md).
